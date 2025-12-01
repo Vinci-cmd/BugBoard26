@@ -8,7 +8,7 @@
     <artifactId>bugboard-backend</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>BugBoard26 Backend</name>
-    <description>Backend per BugBoard26 - Esame Ingegneria del Software</description>
+    <description>Backend per BugBoard26</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -19,10 +19,8 @@
 
     <properties>
         <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
-        <maven.compiler.release>21</maven.compiler.release>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,12 +64,21 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>21</release>
+                    <source>21</source>
+                    <target>21</target>
                 </configuration>
             </plugin>
+            
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.2.0</version> <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

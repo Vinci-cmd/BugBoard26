@@ -1,5 +1,14 @@
-<<<<<<< HEAD
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\service\IssueService.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\controller\IssueController.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\dao\UserDAO.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\dao\CommentDAO.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\model\IssueStatus.java
 C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\BugBoardApplication.java
-=======
-C:\Users\simon\BugBoard26\backend\src\main\java\com\bugboard\BugBoardApplication.java
->>>>>>> 5b082a31a3096391969047e275e6846f79e56287
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\model\Issue.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\model\Comment.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\dto\IssueDTO.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\model\User.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\model\UserRole.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\model\IssuePriority.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\model\IssueType.java
+C:\Users\Nunzi\BugBoard26\backend\src\main\java\com\bugboard\dao\IssueDAO.java
