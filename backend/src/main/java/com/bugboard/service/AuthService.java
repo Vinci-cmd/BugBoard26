@@ -6,7 +6,6 @@ import com.bugboard.model.User;
 import com.bugboard.model.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
@@ -19,40 +18,39 @@ public class AuthService {
         this.userDAO = userDAO;
     }
 
-    /**
-     * Gestisce il login dell'utente.
-     */
     public User login(LoginRequest request) {
+        // (Codice Login invariato...)
         Optional<User> userOpt = userDAO.findByEmail(request.getEmail());
-
-        if (userOpt.isEmpty()) {
-            return null;
-        }
-
+        if (userOpt.isEmpty()) return null;
         User user = userOpt.get();
-
-        if (user.verificaPassword(request.getPassword())) {
-            return user;
-        }
-
+        if (user.verificaPassword(request.getPassword())) return user;
         return null;
     }
 
     /**
-     * Registra un nuovo utente nel sistema.
+     * Crea un nuovo utente.
+     * Richiede l'ID dell'admin che sta eseguendo l'operazione.
      */
-    public void register(User user) {
-        // 1. Controllo se l'email esiste già
-        if (userDAO.existsByEmail(user.getEmail())) {
+    public void createUser(User newUser, Integer adminId) {
+        // 1. Verifica CHI sta facendo la richiesta
+        User admin = userDAO.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Admin non trovato (ID: " + adminId + ")"));
+
+        // 2. Controllo dei permessi (Role-Based Access Control - RBAC Manuale)
+        if (admin.getRuolo() != UserRole.ADMIN) {
+            throw new RuntimeException("ACCESSO NEGATO: Solo gli admin possono creare utenti.");
+        }
+
+        // 3. Controllo duplicati
+        if (userDAO.existsByEmail(newUser.getEmail())) {
             throw new RuntimeException("Email già registrata nel sistema");
         }
 
-        // 2. Imposta il ruolo di default se non presente
-        if (user.getRuolo() == null) {
-            user.setRuolo(UserRole.USER);
+        // 4. Salvataggio (ruolo obbligatorio)
+        if (newUser.getRuolo() == null) {
+            newUser.setRuolo(UserRole.USER);
         }
-
-        // 3. Salva l'utente
-        userDAO.save(user);
+        
+        userDAO.save(newUser);
     }
 }
