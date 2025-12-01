@@ -1,8 +1,8 @@
 package com.bugboard.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import java.util.Date; // UML dice Date
+import java.util.List;
 
 @Entity
 @Table(name = "issues")
@@ -10,67 +10,76 @@ public class Issue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id; // UML: id: int
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false)
     private String titolo;
 
     @Column(nullable = false, columnDefinition = "TEXT")
     private String descrizione;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private IssueStatus stato = IssueStatus.TODO; // Default come da SQL
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private IssueType tipo;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 20)
-    private IssuePriority priorita;
-
     @Column(name = "data_creazione")
-    private LocalDateTime dataCreazione;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date dataCreazione;
 
     @Column(name = "percorso_allegato")
     private String percorsoAllegato;
 
-    // Relazione Molti-a-Uno: Molte issue possono essere scritte da un utente
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private IssueStatus stato = IssueStatus.TODO;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private IssueType tipo;
+
+    @Enumerated(EnumType.STRING)
+    private IssuePriority priorita;
+
+    // Relazione dal diagramma: User "1" --> "0..*" Issue : crea
     @ManyToOne
-    @JoinColumn(name = "autore_id", nullable = false) // Chiave esterna verso users
+    @JoinColumn(name = "autore_id", nullable = false)
     private User autore;
 
-    // Costruttore vuoto
+    // Relazione dal diagramma: Issue "1" *-- "0..*" Comment : contiene
+    // (Cascade ALL perché è una composizione forte nel diagramma)
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
+
     public Issue() {
-        this.dataCreazione = LocalDateTime.now(); // Imposta data corrente alla creazione
+        this.dataCreazione = new Date(); // Imposta data corrente
     }
 
-    // Getters e Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // --- Metodi del Diagramma UML ---
 
-    public String getTitolo() { return titolo; }
+    public Integer getId() {
+        return id;
+    }
+
+    public String getTitolo() {
+        return titolo;
+    }
+
+    public IssueStatus getStato() {
+        return stato;
+    }
+
+    // --- Altri Getter e Setter standard ---
+    public void setId(Integer id) { this.id = id; }
     public void setTitolo(String titolo) { this.titolo = titolo; }
-
     public String getDescrizione() { return descrizione; }
     public void setDescrizione(String descrizione) { this.descrizione = descrizione; }
-
-    public IssueStatus getStato() { return stato; }
-    public void setStato(IssueStatus stato) { this.stato = stato; }
-
-    public IssueType getTipo() { return tipo; }
-    public void setTipo(IssueType tipo) { this.tipo = tipo; }
-
-    public IssuePriority getPriorita() { return priorita; }
-    public void setPriorita(IssuePriority priorita) { this.priorita = priorita; }
-
-    public LocalDateTime getDataCreazione() { return dataCreazione; }
-    public void setDataCreazione(LocalDateTime dataCreazione) { this.dataCreazione = dataCreazione; }
-
+    public Date getDataCreazione() { return dataCreazione; }
+    public void setDataCreazione(Date dataCreazione) { this.dataCreazione = dataCreazione; }
     public String getPercorsoAllegato() { return percorsoAllegato; }
     public void setPercorsoAllegato(String percorsoAllegato) { this.percorsoAllegato = percorsoAllegato; }
-
+    public void setStato(IssueStatus stato) { this.stato = stato; }
+    public IssueType getTipo() { return tipo; }
+    public void setTipo(IssueType tipo) { this.tipo = tipo; }
+    public IssuePriority getPriorita() { return priorita; }
+    public void setPriorita(IssuePriority priorita) { this.priorita = priorita; }
     public User getAutore() { return autore; }
     public void setAutore(User autore) { this.autore = autore; }
+    public List<Comment> getComments() { return comments; }
+    public void setComments(List<Comment> comments) { this.comments = comments; }
 }
