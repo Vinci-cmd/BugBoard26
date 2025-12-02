@@ -11,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile; // Import necessario per
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -55,7 +54,7 @@ public class IssueService {
         if (imageFile != null && !imageFile.isEmpty()) {
             // 1. Definisci la cartella di destinazione
             String uploadDir = "uploads/";
-            Path uploadPath = Paths.get(uploadDir);
+            Path uploadPath = Path.of(uploadDir);
 
             // 2. Se la cartella non esiste, creala
             if (!Files.exists(uploadPath)) {
