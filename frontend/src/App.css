@@ -1,0 +1,10 @@
+#root {
+  width: 100%;       /* Occupa tutta la larghezza */
+  min-height: 100vh; /* Occupa tutta l'altezza */
+  margin: 0;         /* Niente margini automatici */
+  padding: 0;        /* Niente padding forzato */
+  text-align: left;  /* Allinea il testo a sinistra, non al centro */
+}
+
+/* Puoi lasciare il resto (logo, card) se ti servono, 
+   ma per il layout generale basta la regola #root sopra. */
