@@ -45,7 +45,21 @@ public class Issue {
     // (Cascade ALL perché è una composizione forte nel diagramma)
     @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+@Lob // Specifica che è un oggetto grande (Large Object)
+    @Column(name = "allegato", columnDefinition = "LONGBLOB") // Usa "BYTEA" se usi PostgreSQL, "LONGBLOB" per MySQL/H2
+    private byte[] allegato; 
 
+    // AGGIUNGI ANCHE QUESTO (utile per il frontend):
+    @Column(name = "nome_file_allegato")
+    private String nomeFileAllegato;
+
+    // ... getter e setter per i nuovi campi ...
+    public byte[] getAllegato() { return allegato; }
+    public void setAllegato(byte[] allegato) { this.allegato = allegato; }
+
+    public String getNomeFileAllegato() { return nomeFileAllegato; }
+    public void setNomeFileAllegato(String nomeFileAllegato) { this.nomeFileAllegato = nomeFileAllegato; }
+    
     public Issue() {
         this.dataCreazione = new Date(); // Imposta data corrente
     }

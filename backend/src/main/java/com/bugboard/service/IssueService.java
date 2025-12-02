@@ -3,10 +3,12 @@ package com.bugboard.service;
 import com.bugboard.dao.IssueDAO;
 import com.bugboard.dao.UserDAO;
 import com.bugboard.dto.IssueDTO;
-import com.bugboard.model.*; // Importa tutto per comodità
+import com.bugboard.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile; // Importante
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -18,29 +20,32 @@ public class IssueService {
     @Autowired
     private UserDAO userDAO;
 
-    public Issue createIssue(IssueDTO dto) {
+    // Firma del metodo cambiata per accettare MultipartFile
+    public Issue createIssue(IssueDTO dto, MultipartFile file) throws IOException {
         Issue issue = new Issue();
         issue.setTitolo(dto.getTitolo());
         issue.setDescrizione(dto.getDescrizione());
         issue.setTipo(dto.getTipo());
         issue.setPriorita(dto.getPriorita());
-        
-        // Gestione autore (Il tuo "Trucco" temporaneo)
-        Integer autoreId = dto.getAutoreId();
-        if (autoreId == null) {
-            autoreId = 1; 
-        }
-        
-        // Consiglio: Se l'autore non esiste, questo lancia eccezione.
-        // Per ora va bene, ma ricorda di avere un utente con ID 1 nel DB!
-        User autore = userDAO.findById(autoreId)
-                .orElseThrow(() -> new RuntimeException("Autore non trovato ID: " + dto.getAutoreId()));
 
+        // Gestione autore (Codice esistente)
+        Integer autoreId = dto.getAutoreId();
+        if (autoreId == null) autoreId = 1;
+        User autore = userDAO.findById(autoreId)
+                .orElseThrow(() -> new RuntimeException("Autore non trovato"));
         issue.setAutore(autore);
+
+        // --- NUOVA LOGICA PER IL FILE ---
+        if (file != null && !file.isEmpty()) {
+            // Convertiamo il file in array di byte
+            issue.setAllegato(file.getBytes());
+            issue.setNomeFileAllegato(file.getOriginalFilename());
+        }
+
         return issueDAO.save(issue);
     }
 
-    // Metodo unico per recuperare le issue (filtrate o tutte)
+    // ... altri metodi (getBoard, getDetails) rimangono invariati ...
     public List<Issue> getBoard(IssueType tipo, IssueStatus stato, IssuePriority priorita) {
         return issueDAO.searchIssues(tipo, stato, priorita);
     }
