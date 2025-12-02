@@ -4,6 +4,7 @@ import com.bugboard.dao.UserDAO;
 import com.bugboard.dto.LoginRequest;
 import com.bugboard.model.User;
 import com.bugboard.model.UserRole;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
@@ -12,6 +13,7 @@ public class AuthService {
 
     private final UserDAO userDAO;
 
+    @Autowired
     public AuthService(UserDAO userDAO) {
         this.userDAO = userDAO;
     }

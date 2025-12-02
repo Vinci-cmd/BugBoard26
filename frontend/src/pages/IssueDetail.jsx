@@ -230,8 +230,11 @@ const IssueDetail = () => {
                     <div style={styles.metaRow}>
                         <div><span style={styles.metaLabel}>Stato:</span> {issue.stato}</div>
                         <div><span style={styles.metaLabel}>Tipo:</span> {issue.tipo}</div>
-                        {/* Controllo dati sicuro */}
-                        <div><span style={styles.metaLabel}>Autore:</span> {issue.autore ? issue.autore.nomeCompleto : "N/D"}</div>
+                        {/* CORREZIONE NOME AUTORE */}
+                        <div>
+                            <span style={styles.metaLabel}>Autore:</span> 
+                            {issue.autore ? `${issue.autore.nome} ${issue.autore.cognome}` : "N/D"}
+                        </div>
                     </div>
 
                     {/* Descrizione */}
@@ -259,20 +262,24 @@ const IssueDetail = () => {
 
             {/* SEZIONE COMMENTI */}
             <div style={styles.commentsSection}>
+                {/* CORREZIONE: 'comments' invece di 'commenti' */}
                 <h3 style={{...styles.sectionTitle, borderBottom: '2px solid #c5a059', display: 'inline-block', paddingBottom:'5px'}}>
-                    Commenti ({issue.commenti ? issue.commenti.length : 0})
+                    Commenti ({issue.comments ? issue.comments.length : 0})
                 </h3>
 
                 <div style={styles.commentList}>
-                    {issue.commenti && issue.commenti.length > 0 ? (
-                        issue.commenti.map((c) => (
+                    {/* CORREZIONE: 'comments' invece di 'commenti' */}
+                    {issue.comments && issue.comments.length > 0 ? (
+                        issue.comments.map((c) => (
                             <div key={c.id} style={styles.commentItem}>
                                 <div style={styles.commentHeader}>
                                     <span style={styles.authorName}>
-                                        {c.autore ? c.autore.nomeCompleto : "Utente"}
+                                        {/* CORREZIONE NOME AUTORE NEL COMMENTO */}
+                                        {c.autore ? `${c.autore.nome} ${c.autore.cognome}` : "Utente"}
                                     </span>
                                     <span style={styles.timestamp}>
-                                        {new Date(c.dataCreazione).toLocaleString()}
+                                        {/* CORREZIONE DATA: 'dataOra' invece di 'dataCreazione' */}
+                                        {new Date(c.dataOra).toLocaleString()}
                                     </span>
                                 </div>
                                 <p style={styles.commentText}>{c.testo}</p>

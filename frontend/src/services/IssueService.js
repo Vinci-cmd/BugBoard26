@@ -1,4 +1,5 @@
 import api from '../api/axiosConfig';
+import AuthService from './AuthService'; // Importa AuthService
 
 const IssueService = {
     // Metodo esclusivo per la Dashboard (Studente A)
@@ -30,13 +31,16 @@ const IssueService = {
         return response.data;
     },
     
-// VERSIONE CORRETTA (Allineata al tuo Backend Java):
     addComment: async (issueId, text) => {
+        // Recupera l'utente loggato per mandare il suo ID
+        const user = AuthService.getCurrentUser();
+        const autoreId = user ? user.id : null;
+
         const response = await api.post(`/issues/${issueId}/comments`, { 
-            testo: text 
+            testo: text,
+            autoreId: autoreId // Ora inviamo anche l'ID!
         });
         return response.data;
     }
 };
-
 export default IssueService;

@@ -1,4 +1,4 @@
-package com.bugboard.controller;
+/* package com.bugboard.controller;
 
 import com.bugboard.dto.CommentDTO;
 import com.bugboard.model.Comment;
@@ -32,3 +32,4 @@ public class CommentController {
         return ResponseEntity.ok(commentService.getCommentsForIssue(issueId));
     }
 }
+    */

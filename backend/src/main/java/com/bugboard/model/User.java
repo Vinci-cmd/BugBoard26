@@ -2,7 +2,7 @@ package com.bugboard.model;
 
 import jakarta.persistence.*;
 import com.fasterxml.jackson.annotation.JsonProperty; // <--- Import Fondamentale
-import java.util.List;
+
 
 @Entity
 @Table(name = "users")

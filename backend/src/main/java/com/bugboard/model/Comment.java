@@ -1,6 +1,6 @@
 package com.bugboard.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore; 
+import com.fasterxml.jackson.annotation.JsonIgnore; // <--- Import Fondamentale!
 import jakarta.persistence.*;
 import java.util.Date;
 
@@ -23,7 +23,9 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "issue_id", nullable = false)
-    @JsonIgnore // <--- FONDAMENTALE: Interrompe il loop JSON
+    @JsonIgnore // <--- QUESTA è la riga magica.
+    // Impedisce a Spring di stampare di nuovo tutta la Issue dentro il commento,
+    // rompendo il loop infinito (Issue -> Commenti -> Issue...)
     private Issue issue;
 
     @ManyToOne
@@ -34,13 +36,6 @@ public class Comment {
 
     public Comment() {
         this.dataOra = new Date(); // Imposta data corrente alla creazione
-    }
-
-    public Comment(String testo, Issue issue, User autore) {
-        this.testo = testo;
-        this.issue = issue;
-        this.autore = autore;
-        this.dataOra = new Date();
     }
 
     // --- GETTERS E SETTERS ---

@@ -3,6 +3,7 @@ package com.bugboard.controller;
 import com.bugboard.dto.LoginRequest;
 import com.bugboard.model.User;
 import com.bugboard.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +14,7 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Autowired
     public AuthController(AuthService authService) {
         this.authService = authService;
     }
