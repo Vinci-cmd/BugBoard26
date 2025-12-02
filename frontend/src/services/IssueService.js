@@ -3,7 +3,6 @@ import api from '../api/axiosConfig';
 const IssueService = {
     // Per Studente A (Dashboard)
     getAll: async (filters = {}) => {
-        // filters sarà tipo { stato: 'OPEN', tipo: 'BUG' }
         const params = new URLSearchParams(filters);
         const response = await api.get(`/issues?${params.toString()}`);
         return response.data;
@@ -17,10 +16,9 @@ const IssueService = {
 
     // Per Studente B (Creazione con Immagine)
     create: async (formData) => {
-        // Nota: qui passiamo formData, non un oggetto JSON semplice
-        const response = await api.post('/issues', formData, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-        });
+        // CORREZIONE: Rimosso header manuale Content-Type.
+        // Il browser imposterà automaticamente il boundary corretto.
+        const response = await api.post('/issues', formData);
         return response.data;
     },
     

@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
+import CreateIssue from "./pages/CreateIssue";
+import IssueDetail from "./pages/IssueDetail";
 
 // Placeholder per la Dashboard (la faremo al prossimo step)
 const DashboardPlaceholder = () => (
@@ -27,6 +29,10 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />} />
         
         <Route path="/login" element={<Login />} />
+
+        <Route path="/issues/new" element={<CreateIssue />} />
+
+        <Route path="/issues/:id" element={<IssueDetail />} />
         
         {/* Rotta protetta: accessibile solo se loggati */}
         <Route 
