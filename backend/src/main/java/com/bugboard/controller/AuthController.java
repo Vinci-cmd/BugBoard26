@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final AuthService authService;
@@ -18,31 +19,28 @@ public class AuthController {
         this.authService = authService;
     }
 
-    /**
-     * Endpoint per il Login
-     * POST /auth/login
-     */
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        // (Invariato...)
         User user = authService.login(request);
-
-        if (user != null) {
-            return ResponseEntity.ok(user);
-        } else {
-            return ResponseEntity.status(401).body("Email o password errati");
-        }
+        if (user != null) return ResponseEntity.ok(user);
+        return ResponseEntity.status(401).body("Email o password errati");
     }
 
     /**
-     * Endpoint per la Registrazione
-     * POST /auth/register
+     * Endpoint per la Creazione Utenti (Protetto logicamente).
+     * Esempio chiamata: POST /auth/create-user?adminId=1
+     * Body: { "email": "...", "password": "...", "nomeCompleto": "...", "ruolo": "USER" }
      */
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
+    @PostMapping("/create-user")
+    public ResponseEntity<?> createUser(
+            @RequestBody User newUser, 
+            @RequestParam Integer adminId) { // <--- Parametro critico
         try {
-            authService.register(user);
-            return ResponseEntity.status(201).body("Utente registrato con successo");
+            authService.createUser(newUser, adminId);
+            return ResponseEntity.status(201).body("Utente creato con successo dall'Admin.");
         } catch (RuntimeException e) {
+            // Gestisce sia "Accesso Negato" che "Email duplicata"
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
