@@ -32,8 +32,13 @@ public class IssueService {
         issue.setTipo(dto.getTipo());
         issue.setPriorita(dto.getPriorita());
         
-        // --- GESTIONE AUTORE REALE ---
+        // --- FIX FONDAMENTALE ---
+        // Impostiamo lo stato iniziale, altrimenti il DB dà errore se il campo è Not Null
+        issue.setStato(IssueStatus.TODO); 
+        
+        // ... resto del codice (Autore, Immagine, Save) ...
         Integer autoreId = dto.getAutoreId();
+        // ...
 
         // 1. Controllo di Validità: L'ID è obbligatorio!
         if (autoreId == null) {

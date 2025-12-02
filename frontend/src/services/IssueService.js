@@ -23,15 +23,18 @@ const IssueService = {
 
     // Per Studente B (Creazione con Immagine)
     create: async (formData) => {
-        // CORREZIONE: Rimosso header manuale Content-Type.
-        // Il browser imposterà automaticamente il boundary corretto.
+        // Ora che axiosConfig è pulito, basta passare formData.
+        // Axios rileverà l'oggetto FormData e imposterà automaticamente:
+        // Content-Type: multipart/form-data; boundary=----WebKitFormBoundary...
         const response = await api.post('/issues', formData);
         return response.data;
     },
     
-    // Per Studente B (Commenti)
+// VERSIONE CORRETTA (Allineata al tuo Backend Java):
     addComment: async (issueId, text) => {
-        const response = await api.post(`/comments?issueId=${issueId}`, { testo: text });
+        const response = await api.post(`/issues/${issueId}/comments`, { 
+            testo: text 
+        });
         return response.data;
     }
 };

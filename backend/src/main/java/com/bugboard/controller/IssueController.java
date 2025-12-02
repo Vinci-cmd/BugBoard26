@@ -28,17 +28,23 @@ public class IssueController {
     // --- MODIFICA CRITICA PER L'IMMAGINE ---
     // 1. Specifichiamo che questo endpoint consuma 'multipart/form-data'
     // 2. Usiamo @RequestPart invece di @RequestBody
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Issue> create(
-            @RequestPart("issue") IssueDTO req,           // La parte JSON
-            @RequestPart(value = "file", required = false) MultipartFile file // Il file (opzionale)
+            @RequestPart("issue") IssueDTO req,
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) {
         try {
-            // Chiamiamo il NUOVO metodo del service che gestisce anche il file
             Issue createdIssue = issueService.createIssueWithImage(req, file);
             return ResponseEntity.status(HttpStatus.CREATED).body(createdIssue);
         } catch (IOException e) {
-            // Gestiamo l'errore di salvataggio del file
+            // MODIFICA QUI: Stampa l'errore nella console!
+            System.err.println("ERRORE SALVATAGGIO FILE:");
+            e.printStackTrace(); 
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (RuntimeException e) {
+            // Aggiungi anche questo per catturare errori ID utente e vederli
+            System.err.println("ERRORE LOGICA BUSINESS (Es. ID Utente):");
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
