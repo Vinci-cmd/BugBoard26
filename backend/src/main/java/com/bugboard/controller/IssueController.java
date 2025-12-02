@@ -2,6 +2,7 @@ package com.bugboard.controller;
 
 import com.bugboard.dto.IssueDTO;
 import com.bugboard.model.Issue;
+import com.bugboard.model.IssuePriority;
 import com.bugboard.model.IssueStatus;
 import com.bugboard.model.IssueType;
 import com.bugboard.model.IssuePriority; 
@@ -18,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/issues")
-@CrossOrigin(origins = "*") 
+@CrossOrigin(origins = "*")
 public class IssueController {
 
     @Autowired
@@ -42,6 +43,7 @@ public class IssueController {
         }
     }
 
+    // ... Gli altri metodi (list, get) rimangono uguali ...
     @GetMapping
     public ResponseEntity<List<Issue>> getAllIssues(
             @RequestParam(required = false) IssueType tipo,

@@ -71,7 +71,7 @@ public class IssueService {
         return issueDAO.save(issue);
     }
 
-    // Metodo unico per recuperare le issue (filtrate o tutte)
+    // ... altri metodi (getBoard, getDetails) rimangono invariati ...
     public List<Issue> getBoard(IssueType tipo, IssueStatus stato, IssuePriority priorita) {
         return issueDAO.searchIssues(tipo, stato, priorita);
     }
