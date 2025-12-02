@@ -1,19 +1,28 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 
-// Placeholder per la Dashboard (la faremo al prossimo step)
-const DashboardPlaceholder = () => (
-  <div style={{padding: '2rem'}}>
-    <h1>Benvenuto nella Dashboard!</h1>
-    <p>Qui vedrai la lista delle Issue.</p>
-    <button onClick={() => {
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-    }}>Logout</button>
-  </div>
+// --- I TUOI COMPONENTI (Studente A) ---
+import Navbar from './components/Navbar';
+import Dashboard from './pages/Dashboard';
+
+// --- COMPONENTI DEL COLLEGA (Studente B) ---
+// Siccome questi file non esistono ancora sul tuo computer,
+// usiamo questi "finti" componenti temporanei per non rompere il sito.
+const CreateIssuePlaceholder = () => (
+    <div style={{ padding: '2rem' }}>
+        <h2>Pagina del Collega (B)</h2>
+        <p>Qui andrà il form di creazione issue.</p>
+    </div>
 );
 
-// Componente per proteggere le rotte (se non sei loggato, ti rimanda al login)
+const IssueDetailPlaceholder = () => (
+    <div style={{ padding: '2rem' }}>
+        <h2>Pagina del Collega (B)</h2>
+        <p>Qui andranno i dettagli della issue.</p>
+    </div>
+);
+
+// Componente per proteggere le rotte
 const PrivateRoute = ({ children }) => {
     const token = localStorage.getItem('token');
     return token ? children : <Navigate to="/login" />;
@@ -22,21 +31,43 @@ const PrivateRoute = ({ children }) => {
 function App() {
   return (
     <Router>
+      {/* La Navbar appare sempre se sei loggato (gestito dentro il componente stesso) */}
+      <Navbar />
+
       <Routes>
-        {/* Rotta di default: reindirizza al login */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* Rotta di default */}
+        <Route path="/" element={<Navigate to="/dashboard" />} />
         
         <Route path="/login" element={<Login />} />
         
-        {/* Rotta protetta: accessibile solo se loggati */}
+        {/* --- LE TUE ROTTE (Studente A) --- */}
         <Route 
           path="/dashboard" 
           element={
             <PrivateRoute>
-              <DashboardPlaceholder />
+              <Dashboard /> {/* Carica la TUA dashboard vera */}
             </PrivateRoute>
           } 
         />
+
+        {/* --- ROTTE DEL COLLEGA (Studente B) --- */}
+        <Route 
+          path="/create" 
+          element={
+            <PrivateRoute>
+              <CreateIssuePlaceholder />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/issue/:id" 
+          element={
+            <PrivateRoute>
+              <IssueDetailPlaceholder />
+            </PrivateRoute>
+          } 
+        />
+
       </Routes>
     </Router>
   );
