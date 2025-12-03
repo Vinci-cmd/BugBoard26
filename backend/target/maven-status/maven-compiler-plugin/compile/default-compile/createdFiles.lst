@@ -4,6 +4,7 @@ com\bugboard\controller\IssueController.class
 com\bugboard\model\IssueStatus.class
 com\bugboard\service\AuthService.class
 com\bugboard\model\UserRole.class
+com\bugboard\config\WebConfig.class
 com\bugboard\model\Issue.class
 com\bugboard\controller\CommentController.class
 com\bugboard\controller\AuthController.class

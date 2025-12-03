@@ -260,19 +260,19 @@ const IssueDetail = () => {
             {/* SEZIONE COMMENTI */}
             <div style={styles.commentsSection}>
                 <h3 style={{...styles.sectionTitle, borderBottom: '2px solid #c5a059', display: 'inline-block', paddingBottom:'5px'}}>
-                    Commenti ({issue.commenti ? issue.commenti.length : 0})
+                    Commenti ({issue.comments?.length || 0})
                 </h3>
 
                 <div style={styles.commentList}>
-                    {issue.commenti && issue.commenti.length > 0 ? (
-                        issue.commenti.map((c) => (
+                    {issue.comments && issue.comments.length > 0 ? (
+                        issue.comments.map((c) => (
                             <div key={c.id} style={styles.commentItem}>
                                 <div style={styles.commentHeader}>
                                     <span style={styles.authorName}>
                                         {c.autore ? c.autore.nomeCompleto : "Utente"}
                                     </span>
                                     <span style={styles.timestamp}>
-                                        {new Date(c.dataCreazione).toLocaleString()}
+                                        {new Date(c.dataOra).toLocaleString()}
                                     </span>
                                 </div>
                                 <p style={styles.commentText}>{c.testo}</p>
