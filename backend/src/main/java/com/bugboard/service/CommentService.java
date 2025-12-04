@@ -6,6 +6,8 @@ import com.bugboard.dao.UserDAO;
 import com.bugboard.model.Comment;
 import com.bugboard.model.Issue;
 import com.bugboard.model.User;
+import com.bugboard.model.UserRole;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,6 +51,24 @@ public class CommentService {
         return commentDAO.save(comment);
     }
 
+    public void deleteComment(Integer commentId, Integer requestorId) {
+    // 1. Recupera l'utente che sta facendo la richiesta
+    User requestor = userDAO.findById(requestorId)
+            .orElseThrow(() -> new RuntimeException("Utente richiedente non trovato con ID: " + requestorId));
+
+    // 2. Verifica i permessi (Solo ADMIN)
+    if (requestor.getRuolo() != UserRole.ADMIN) {
+        throw new RuntimeException("ACCESSO NEGATO: Solo gli amministratori possono eliminare i commenti.");
+    }
+
+    // 3. Verifica esistenza commento
+    if (!commentDAO.existsById(commentId)) {
+        throw new RuntimeException("Commento non trovato con ID: " + commentId);
+    }
+
+    // 4. Esegui cancellazione
+    commentDAO.deleteById(commentId);
+}
     public List<Comment> getCommentsForIssue(Integer issueId) {
         return commentDAO.findByIssueId(issueId);
     }

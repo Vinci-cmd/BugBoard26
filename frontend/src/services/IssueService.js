@@ -36,7 +36,19 @@ const IssueService = {
             autoreId: autoreId // <--- Nuovo campo inviato
         });
         return response.data;
+    },
+    
+    delete: async (issueId, adminId) => {
+        const response = await api.delete(`/issues/${issueId}?adminId=${adminId}`);
+        return response.data;
+    },
+
+    deleteComment: async (issueId, commentId, adminId) => {
+        // Passiamo adminId come query param
+        const response = await api.delete(`/issues/${issueId}/comments/${commentId}?adminId=${adminId}`);
+        return response.data;
     }
+
 };
 
 export default IssueService;

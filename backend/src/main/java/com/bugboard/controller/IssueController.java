@@ -65,4 +65,14 @@ public class IssueController {
         Issue issue = issueService.getDetails(id);
         return ResponseEntity.ok(issue);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteIssue(@PathVariable Long id, @RequestParam Integer adminId) {
+        try {
+            issueService.deleteIssue(id, adminId);
+            return ResponseEntity.ok("Issue eliminata con successo.");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
 }
