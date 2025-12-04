@@ -39,7 +39,6 @@ public class Issue {
 
     // --- GESTIONE ALLEGATO (BLOB) ---
     
-    @Lob 
     @Column(name = "allegato", columnDefinition = "BYTEA") 
     private byte[] allegato; 
 

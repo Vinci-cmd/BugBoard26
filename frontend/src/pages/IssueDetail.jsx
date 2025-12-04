@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import IssueService from "../services/IssueService";
+import AuthService from "../services/AuthService"; // <--- Import necessario
 
 const IssueDetail = () => {
   const { id } = useParams();
@@ -32,16 +33,28 @@ const IssueDetail = () => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
+    // --- RECUPERO UTENTE CORRENTE ---
+    const currentUser = AuthService.getCurrentUser();
+    
+    if (!currentUser || !currentUser.id) {
+        alert("Errore: Utente non loggato. Effettua nuovamente il login.");
+        navigate('/login');
+        return;
+    }
+
     try {
-      await IssueService.addComment(id, newComment);
+      // Passiamo l'ID dell'utente reale al service
+      await IssueService.addComment(id, newComment, currentUser.id);
+      
       await fetchIssue(); // Ricarica per mostrare il nuovo commento
       setNewComment(""); 
     } catch (err) {
-      alert("Errore nell'invio del commento");
+      console.error("Errore invio commento:", err);
+      alert("Errore nell'invio del commento. Controlla la console.");
     }
   };
 
-  // --- STILI UNIVERSITARI/ENTERPRISE ---
+  // --- STILI (Invariati) ---
   const styles = {
     pageWrapper: {
         backgroundColor: '#f4f6f9',
@@ -51,7 +64,6 @@ const IssueDetail = () => {
     },
     container: { maxWidth: '900px', margin: '0 auto' },
     
-    // Bottone Indietro
     backButton: {
         background: 'none',
         border: 'none',
@@ -66,7 +78,6 @@ const IssueDetail = () => {
         fontWeight: '500'
     },
 
-    // Card Principale
     mainCard: {
         backgroundColor: 'white',
         borderRadius: '6px',
@@ -89,13 +100,12 @@ const IssueDetail = () => {
         fontFamily: '"Georgia", serif',
         fontSize: '1.8rem'
     },
-    // Badge Priorità dinamico
     priorityBadge: (prio) => {
         const colors = {
             CRITICAL: { bg: '#dc3545', text: 'white' },
-            HIGH: { bg: '#ffc107', text: '#212529' }, // Giallo
-            MEDIUM: { bg: '#17a2b8', text: 'white' }, // Azzurro
-            LOW: { bg: '#6c757d', text: 'white' }     // Grigio
+            HIGH: { bg: '#ffc107', text: '#212529' }, 
+            MEDIUM: { bg: '#17a2b8', text: 'white' },
+            LOW: { bg: '#6c757d', text: 'white' }
         };
         const style = colors[prio] || colors.LOW;
         return {
@@ -112,7 +122,6 @@ const IssueDetail = () => {
 
     body: { padding: '2rem' },
     
-    // Riga Metadati (Stato, Tipo, Autore)
     metaRow: {
         display: 'flex',
         gap: '2rem',
@@ -149,7 +158,6 @@ const IssueDetail = () => {
     },
     link: { color: '#007bff', textDecoration: 'none', fontWeight: '500' },
 
-    // Sezione Commenti
     commentsSection: { marginTop: '3rem' },
     commentList: { marginBottom: '2rem' },
     commentItem: {
@@ -172,7 +180,6 @@ const IssueDetail = () => {
     timestamp: { color: '#999' },
     commentText: { margin: 0, color: '#444', lineHeight: '1.5' },
 
-    // Form
     formCard: {
         backgroundColor: '#fff',
         padding: '1.5rem',
@@ -211,12 +218,10 @@ const IssueDetail = () => {
     <div style={styles.pageWrapper}>
         <div style={styles.container}>
             
-            {/* Bottone Indietro */}
             <button style={styles.backButton} onClick={() => navigate(-1)}>
                 <span>&larr;</span> Torna alla Dashboard
             </button>
 
-            {/* CARD DETTAGLIO */}
             <div style={styles.mainCard}>
                 <div style={styles.header}>
                     <h1 style={styles.title}>#{issue.id} - {issue.titolo}</h1>
@@ -226,21 +231,17 @@ const IssueDetail = () => {
                 </div>
                 
                 <div style={styles.body}>
-                    {/* Metadati */}
                     <div style={styles.metaRow}>
                         <div><span style={styles.metaLabel}>Stato:</span> {issue.stato}</div>
                         <div><span style={styles.metaLabel}>Tipo:</span> {issue.tipo}</div>
-                        {/* Controllo dati sicuro */}
                         <div><span style={styles.metaLabel}>Autore:</span> {issue.autore ? issue.autore.nomeCompleto : "N/D"}</div>
                     </div>
 
-                    {/* Descrizione */}
                     <h3 style={styles.sectionTitle}>Descrizione</h3>
                     <div style={styles.descriptionBox}>
                         {issue.descrizione}
                     </div>
 
-                    {/* Allegato */}
                     {issue.percorsoAllegato && (
                         <div style={styles.attachmentBox}>
                             <strong>📎 Allegato: </strong>
@@ -257,7 +258,6 @@ const IssueDetail = () => {
                 </div>
             </div>
 
-            {/* SEZIONE COMMENTI */}
             <div style={styles.commentsSection}>
                 <h3 style={{...styles.sectionTitle, borderBottom: '2px solid #c5a059', display: 'inline-block', paddingBottom:'5px'}}>
                     Commenti ({issue.comments?.length || 0})
@@ -283,7 +283,6 @@ const IssueDetail = () => {
                     )}
                 </div>
 
-                {/* FORM NUOVO COMMENTO */}
                 <div style={styles.formCard}>
                     <h4 style={{marginTop: 0, color: '#555'}}>Aggiungi un commento</h4>
                     <form onSubmit={handleAddComment}>
@@ -312,4 +311,4 @@ const IssueDetail = () => {
   );
 };
 
-export default IssueDetail;
+export default IssueDetail; 

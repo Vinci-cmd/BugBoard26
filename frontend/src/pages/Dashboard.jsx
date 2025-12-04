@@ -212,9 +212,10 @@ const Dashboard = () => {
                         <label style={styles.label}>Priorità</label>
                         <select name="priorita" style={styles.select} onChange={handleFilterChange}>
                             <option value="">Tutte le Priorità</option>
-                            <option value="LOW">Bassa</option>
-                            <option value="MEDIUM">Media</option>
-                            <option value="HIGH">Alta</option>
+                            <option value="LOW">Low</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="HIGH">High</option>
+                            <option value="CRITICAL">Critical</option>
                         </select>
                     </div>
 
@@ -225,6 +226,7 @@ const Dashboard = () => {
                             <option value="BUG">Bug</option>
                             <option value="FEATURE">Feature</option>
                             <option value="QUESTION">Question</option>
+                            <option value="DOCUMENTATION">Documentation</option>
                         </select>
                     </div>
                 </div>

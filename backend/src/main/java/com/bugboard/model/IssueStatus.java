@@ -2,5 +2,6 @@ package com.bugboard.model;
 
 public enum IssueStatus {
     TODO,
-    CLOSED
+    IN_PROGRESS,
+    DONE,
 }

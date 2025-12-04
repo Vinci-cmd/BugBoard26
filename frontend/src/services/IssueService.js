@@ -23,17 +23,17 @@ const IssueService = {
 
     // Per Studente B (Creazione con Immagine)
     create: async (formData) => {
-        // Ora che axiosConfig è pulito, basta passare formData.
-        // Axios rileverà l'oggetto FormData e imposterà automaticamente:
-        // Content-Type: multipart/form-data; boundary=----WebKitFormBoundary...
+        // Axios gestisce automaticamente il Content-Type multipart/form-data
         const response = await api.post('/issues', formData);
         return response.data;
     },
     
-// VERSIONE CORRETTA (Allineata al tuo Backend Java):
-    addComment: async (issueId, text) => {
+    // --- MODIFICA FONDAMENTALE PER FUNZIONALITÀ 5 ---
+    // Ora accettiamo anche autoreId e lo inviamo al backend
+    addComment: async (issueId, text, autoreId) => {
         const response = await api.post(`/issues/${issueId}/comments`, { 
-            testo: text 
+            testo: text,
+            autoreId: autoreId // <--- Nuovo campo inviato
         });
         return response.data;
     }

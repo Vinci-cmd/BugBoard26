@@ -24,17 +24,22 @@ public class CommentService {
     @Autowired
     private UserDAO userDAO;
 
-    public Comment addComment(Long issueId, String testo) {
+    // MODIFICA: Ora accettiamo anche l'ID dell'autore come parametro
+    public Comment addComment(Long issueId, String testo, Integer autoreId) {
         // 1. Recupera la Issue
         Issue issue = issueDAO.findById(issueId)
                 .orElseThrow(() -> new RuntimeException("Issue non trovata con ID: " + issueId));
 
-        // 2. Recupera l'Autore (TRUCCO STUDENTE B: sempre ID 1 per ora)
-        // TODO: Sostituire con l'utente loggato quando ci sarà la security
-        User autore = userDAO.findById(1)
-                .orElseThrow(() -> new RuntimeException("Utente default (ID 1) non trovato!"));
+        // 2. Controllo Validità Autore (Il frontend deve inviarlo!)
+        if (autoreId == null) {
+            throw new IllegalArgumentException("Errore: ID Autore mancante per il commento.");
+        }
 
-        // 3. Crea il Commento
+        // 3. Recupera l'Autore Reale dal DB
+        User autore = userDAO.findById(autoreId)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato con ID: " + autoreId));
+
+        // 4. Crea il Commento
         Comment comment = new Comment();
         comment.setTesto(testo);
         comment.setDataOra(new Date()); // Imposta data corrente

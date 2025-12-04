@@ -20,15 +20,23 @@ public class CommentController {
 
     // Endpoint: POST /api/issues/{id}/comments
     @PostMapping("/{issueId}/comments")
-    public ResponseEntity<Comment> postComment(@PathVariable Long issueId, @RequestBody CommentDTO req) {
-        Comment nuovoCommento = commentService.addComment(issueId, req.getTesto());
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuovoCommento);
+    public ResponseEntity<?> postComment(@PathVariable Long issueId, @RequestBody CommentDTO req) {
+        try {
+            // MODIFICA: Passiamo issueId, testo E autoreId al service
+            Comment nuovoCommento = commentService.addComment(issueId, req.getTesto(), req.getAutoreId());
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuovoCommento);
+        } catch (IllegalArgumentException e) {
+            // Gestisce il caso in cui autoreId manchi o sia null
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (RuntimeException e) {
+            // Gestisce errori come "Utente non trovato" o "Issue non trovata"
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     // Endpoint: GET /api/issues/{id}/comments
     @GetMapping("/{issueId}/comments")
     public ResponseEntity<List<Comment>> getComments(@PathVariable Integer issueId) {
-        // Nota: Assicurati che i tipi (Integer/Long) siano coerenti col tuo Model
         return ResponseEntity.ok(commentService.getCommentsForIssue(issueId));
     }
 }

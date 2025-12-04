@@ -151,6 +151,18 @@ const Navbar = () => {
                     >
                         Nuova Issue
                     </Link>
+
+                    {/* NUOVO LINK: Visibile solo agli ADMIN */}
+                    {user && user.ruolo === 'ADMIN' && (
+                        <Link 
+                            to="/create-user" 
+                            style={{...styles.link(2), color: '#805ad5'}} // Un colore viola distintivo per azioni admin
+                            onMouseEnter={() => setHoverIndex(2)}
+                            onMouseLeave={() => setHoverIndex(null)}
+                        >
+                            Gestione Utenti
+                        </Link>
+                    )}
                 </div>
                 
                 {/* Sezione Utente con Avatar */}
