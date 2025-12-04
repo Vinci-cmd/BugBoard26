@@ -1,0 +1,6 @@
+projectKey=bugboard-backend
+serverUrl=http://localhost:9000
+serverVersion=25.11.0.114957
+dashboardUrl=http://localhost:9000/dashboard?id=bugboard-backend
+ceTaskId=d52c3278-6102-42c5-ac4a-577463192326
+ceTaskUrl=http://localhost:9000/api/ce/task?id=d52c3278-6102-42c5-ac4a-577463192326

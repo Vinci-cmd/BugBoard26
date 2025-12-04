@@ -1,5 +1,6 @@
 package com.bugboard.controller;
 
+import jakarta.validation.Valid;
 import com.bugboard.dto.LoginRequest;
 import com.bugboard.model.User;
 import com.bugboard.service.AuthService;
@@ -20,7 +21,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
         // (Invariato...)
         User user = authService.login(request);
         if (user != null) return ResponseEntity.ok(user);
@@ -34,7 +35,7 @@ public class AuthController {
      */
     @PostMapping("/create-user")
     public ResponseEntity<?> createUser(
-            @RequestBody User newUser, 
+            @Valid @RequestBody User newUser, 
             @RequestParam Integer adminId) { // <--- Parametro critico
         try {
             authService.createUser(newUser, adminId);

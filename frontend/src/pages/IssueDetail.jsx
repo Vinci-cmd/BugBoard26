@@ -137,23 +137,30 @@ const IssueDetail = () => {
         fontFamily: '"Georgia", serif',
         fontSize: '1.8rem'
     },
-    priorityBadge: (prio) => {
+priorityBadge: (prio) => {
+        // Definiamo i colori per ogni livello (Sfondo, Testo, Bordo)
         const colors = {
-            CRITICAL: { bg: '#dc3545', text: 'white' },
-            HIGH: { bg: '#ffc107', text: '#212529' }, 
-            MEDIUM: { bg: '#17a2b8', text: 'white' },
-            LOW: { bg: '#6c757d', text: 'white' }
+            CRITICAL: { bg: '#e9d8fd', text: '#44337a', border: '#b794f4' }, // Viola
+            HIGH:     { bg: '#fff5f5', text: '#c53030', border: '#fc8181' }, // Rosso
+            MEDIUM:   { bg: '#ebf8ff', text: '#2b6cb0', border: '#63b3ed' }, // Blu
+            LOW:      { bg: '#f0fff4', text: '#2f855a', border: '#68d391' }, // Verde
+            DEFAULT:  { bg: '#edf2f7', text: '#4a5568', border: '#cbd5e0' }  // Grigio
         };
-        const style = colors[prio] || colors.LOW;
+
+        // Selezioniamo lo stile giusto, o usiamo il default se 'prio' non esiste
+        const style = colors[prio] || colors.DEFAULT;
+
         return {
             backgroundColor: style.bg,
             color: style.text,
+            border: `1px solid ${style.border}`, // Aggiungiamo il bordo coordinato
             padding: '0.4rem 0.8rem',
             borderRadius: '4px',
             fontSize: '0.8rem',
             fontWeight: 'bold',
             letterSpacing: '0.5px',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            display: 'inline-block' // Assicura che il padding funzioni bene
         };
     },
 
@@ -473,4 +480,4 @@ const IssueDetail = () => {
   );
 };
 
-export default IssueDetail;
+export default IssueDetail; 

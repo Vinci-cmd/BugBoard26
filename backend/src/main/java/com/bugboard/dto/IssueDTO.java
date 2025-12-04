@@ -2,18 +2,27 @@ package com.bugboard.dto;
 
 import com.bugboard.model.IssueType;
 import com.bugboard.model.IssuePriority;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 public class IssueDTO {
 
+    @NotBlank(message = "Il titolo è obbligatorio")
+    @Size(min = 1, max = 1000, message = "Il titolo deve avere tra 5 e 100 caratteri")
     private String titolo;
+
+    @NotBlank(message = "La descrizione è obbligatoria")
+    @Size(min = 1, message = "La descrizione deve essere di almeno 10 caratteri")
     private String descrizione;
     
-    // Usiamo gli Enum direttamente per sfruttare la conversione automatica di Spring
+    @NotNull(message = "Il tipo è obbligatorio")
     private IssueType tipo;
+    
+    // La priorità può essere null (gestita nel service o opzionale), se vuoi renderla obbligatoria aggiungi @NotNull
     private IssuePriority priorita;
 
-    // Questo campo serve per dire "Chi ha creato la issue"
-    // Nel UML non è esplicitato nel rettangolo, ma è necessario per la logica del Service
+    @NotNull(message = "L'ID autore è obbligatorio")
     private Integer autoreId;
 
     // Costruttore vuoto (Necessario per la deserializzazione JSON)

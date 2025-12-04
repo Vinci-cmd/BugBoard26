@@ -1,7 +1,11 @@
 package com.bugboard.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 public class CommentDTO {
     
+    @NotBlank(message = "Il testo del commento non può essere vuoto")
     private String testo;
     private Integer autoreId; // Nuovo campo fondamentale!
 

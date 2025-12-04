@@ -1,3 +1,5 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "appService.defaultWebAppToDeploy": "/subscriptions/4c201ae1-5211-4186-af25-40bd14fd6414/resourceGroups/bugboard-backend_group/providers/Microsoft.Web/sites/bugboard-backend",
+    "appService.deploySubpath": "backend\\target\\bugboard-backend-1.0.0-SNAPSHOT.jar"
 }

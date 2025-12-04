@@ -126,6 +126,7 @@ const Dashboard = () => {
             boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
             transition: 'background-color 0.2s'
         },
+        // Bottone Blu (Refresh - Aggiornato per essere blu pieno come nell'immagine)
         refreshButton: {
             backgroundColor: '#4299e1',
             border: 'none',
@@ -141,6 +142,7 @@ const Dashboard = () => {
             boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
             transition: 'background-color 0.2s'
         },
+        // Card bianca per i filtri
         filterBar: { 
             display: 'flex', 
             gap: '1.5rem', 
