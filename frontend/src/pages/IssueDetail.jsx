@@ -1,16 +1,21 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import IssueService from "../services/IssueService";
-import AuthService from "../services/AuthService"; // <--- Import necessario
+import AuthService from "../services/AuthService";
 
 const IssueDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // Stati Dati
   const [issue, setIssue] = useState(null);
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState("");
   const [error, setError] = useState(null);
+
+  // Stati Modale Cancellazione
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
 
   useEffect(() => {
     fetchIssue();
@@ -33,9 +38,7 @@ const IssueDetail = () => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
-    // --- RECUPERO UTENTE CORRENTE ---
     const currentUser = AuthService.getCurrentUser();
-    
     if (!currentUser || !currentUser.id) {
         alert("Errore: Utente non loggato. Effettua nuovamente il login.");
         navigate('/login');
@@ -43,18 +46,52 @@ const IssueDetail = () => {
     }
 
     try {
-      // Passiamo l'ID dell'utente reale al service
       await IssueService.addComment(id, newComment, currentUser.id);
-      
-      await fetchIssue(); // Ricarica per mostrare il nuovo commento
+      await fetchIssue();
       setNewComment(""); 
     } catch (err) {
       console.error("Errore invio commento:", err);
-      alert("Errore nell'invio del commento. Controlla la console.");
+      alert("Errore nell'invio del commento.");
     }
   };
 
-  // --- STILI (Invariati) ---
+  // --- GESTIONE CANCELLAZIONE CON MODALE ---
+  
+  // 1. Apre la modale
+  const initiateDelete = (commentId) => {
+      setCommentToDelete(commentId);
+      setShowDeleteModal(true);
+  };
+
+  // 2. Chiude la modale senza fare nulla
+  const cancelDelete = () => {
+      setShowDeleteModal(false);
+      setCommentToDelete(null);
+  };
+
+  // 3. Esegue effettivamente la cancellazione
+  const confirmDelete = async () => {
+      if (!commentToDelete) return;
+      
+      const currentUser = AuthService.getCurrentUser();
+      if (!currentUser || currentUser.ruolo !== 'ADMIN') {
+          alert("Azione non autorizzata.");
+          return;
+      }
+
+      try {
+          await IssueService.deleteComment(id, commentToDelete, currentUser.id);
+          await fetchIssue(); // Aggiorna la lista
+          setShowDeleteModal(false); // Chiudi modale
+          setCommentToDelete(null);  // Reset
+      } catch (err) {
+          console.error("Errore eliminazione commento:", err);
+          alert("Errore durante l'eliminazione.");
+      }
+  };
+
+
+  // --- STILI ---
   const styles = {
     pageWrapper: {
         backgroundColor: '#f4f6f9',
@@ -100,23 +137,30 @@ const IssueDetail = () => {
         fontFamily: '"Georgia", serif',
         fontSize: '1.8rem'
     },
-    priorityBadge: (prio) => {
+priorityBadge: (prio) => {
+        // Definiamo i colori per ogni livello (Sfondo, Testo, Bordo)
         const colors = {
-            CRITICAL: { bg: '#dc3545', text: 'white' },
-            HIGH: { bg: '#ffc107', text: '#212529' }, 
-            MEDIUM: { bg: '#17a2b8', text: 'white' },
-            LOW: { bg: '#6c757d', text: 'white' }
+            CRITICAL: { bg: '#e9d8fd', text: '#44337a', border: '#b794f4' }, // Viola
+            HIGH:     { bg: '#fff5f5', text: '#c53030', border: '#fc8181' }, // Rosso
+            MEDIUM:   { bg: '#ebf8ff', text: '#2b6cb0', border: '#63b3ed' }, // Blu
+            LOW:      { bg: '#f0fff4', text: '#2f855a', border: '#68d391' }, // Verde
+            DEFAULT:  { bg: '#edf2f7', text: '#4a5568', border: '#cbd5e0' }  // Grigio
         };
-        const style = colors[prio] || colors.LOW;
+
+        // Selezioniamo lo stile giusto, o usiamo il default se 'prio' non esiste
+        const style = colors[prio] || colors.DEFAULT;
+
         return {
             backgroundColor: style.bg,
             color: style.text,
+            border: `1px solid ${style.border}`, // Aggiungiamo il bordo coordinato
             padding: '0.4rem 0.8rem',
             borderRadius: '4px',
             fontSize: '0.8rem',
             fontWeight: 'bold',
             letterSpacing: '0.5px',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            display: 'inline-block' // Assicura che il padding funzioni bene
         };
     },
 
@@ -171,14 +215,31 @@ const IssueDetail = () => {
     commentHeader: {
         display: 'flex',
         justifyContent: 'space-between',
+        alignItems: 'center',
         marginBottom: '0.5rem',
         fontSize: '0.9rem',
         borderBottom: '1px solid #f5f5f5',
         paddingBottom: '0.5rem'
     },
+    authorInfo: { display: 'flex', alignItems: 'center', gap: '10px' },
     authorName: { fontWeight: 'bold', color: '#2c3e50' },
     timestamp: { color: '#999' },
     commentText: { margin: 0, color: '#444', lineHeight: '1.5' },
+
+    deleteBtn: {
+        backgroundColor: 'transparent',
+        border: 'none',
+        color: '#e53e3e',
+        cursor: 'pointer',
+        fontWeight: '600',
+        fontSize: '0.85rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '4px',
+        padding: '4px 8px',
+        borderRadius: '4px',
+        transition: 'background-color 0.2s'
+    },
 
     formCard: {
         backgroundColor: '#fff',
@@ -207,12 +268,74 @@ const IssueDetail = () => {
         fontWeight: '600',
         fontSize: '0.9rem',
         transition: 'background 0.2s'
+    },
+
+    // --- STILI MODALE ---
+    modalOverlay: {
+        position: 'fixed',
+        top: 0, left: 0, right: 0, bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Sfondo scuro semi-trasparente
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000,
+        backdropFilter: 'blur(3px)' // Effetto sfocato moderno
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        padding: '2rem',
+        borderRadius: '12px',
+        width: '90%',
+        maxWidth: '400px',
+        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+        textAlign: 'center',
+        border: '1px solid #e2e8f0'
+    },
+    modalTitle: {
+        marginTop: 0,
+        color: '#1a202c',
+        fontSize: '1.25rem',
+        fontWeight: 'bold',
+        marginBottom: '0.5rem'
+    },
+    modalText: {
+        color: '#718096',
+        marginBottom: '1.5rem',
+        lineHeight: '1.5'
+    },
+    modalActions: {
+        display: 'flex',
+        justifyContent: 'center',
+        gap: '1rem'
+    },
+    btnCancel: {
+        padding: '0.6rem 1.2rem',
+        backgroundColor: '#edf2f7',
+        color: '#4a5568',
+        border: 'none',
+        borderRadius: '6px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        transition: 'background 0.2s'
+    },
+    btnConfirm: {
+        padding: '0.6rem 1.2rem',
+        backgroundColor: '#e53e3e', // Rosso
+        color: 'white',
+        border: 'none',
+        borderRadius: '6px',
+        fontWeight: '600',
+        cursor: 'pointer',
+        boxShadow: '0 4px 6px rgba(229, 62, 62, 0.2)',
+        transition: 'background 0.2s'
     }
   };
 
   if (loading) return <div style={{textAlign:'center', padding:'3rem', color:'#666'}}>Caricamento dati...</div>;
   if (error) return <div style={{textAlign:'center', padding:'3rem', color:'#dc3545'}}>{error}</div>;
   if (!issue) return <div style={{textAlign:'center', padding:'3rem'}}>Issue non trovata.</div>;
+
+  const isAdmin = AuthService.getCurrentUser()?.ruolo === 'ADMIN';
 
   return (
     <div style={styles.pageWrapper}>
@@ -268,12 +391,27 @@ const IssueDetail = () => {
                         issue.comments.map((c) => (
                             <div key={c.id} style={styles.commentItem}>
                                 <div style={styles.commentHeader}>
-                                    <span style={styles.authorName}>
-                                        {c.autore ? c.autore.nomeCompleto : "Utente"}
-                                    </span>
-                                    <span style={styles.timestamp}>
-                                        {new Date(c.dataOra).toLocaleString()}
-                                    </span>
+                                    <div style={styles.authorInfo}>
+                                        <span style={styles.authorName}>
+                                            {c.autore ? c.autore.nomeCompleto : "Utente"}
+                                        </span>
+                                        <span style={styles.timestamp}>
+                                            {new Date(c.dataOra).toLocaleString()}
+                                        </span>
+                                    </div>
+
+                                    {/* Usa initiateDelete invece di un window.confirm diretto */}
+                                    {isAdmin && (
+                                        <button 
+                                            onClick={() => initiateDelete(c.id)}
+                                            style={styles.deleteBtn}
+                                            title="Elimina commento"
+                                            onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#fff5f5'}
+                                            onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                        >
+                                            🗑️ Elimina
+                                        </button>
+                                    )}
                                 </div>
                                 <p style={styles.commentText}>{c.testo}</p>
                             </div>
@@ -305,6 +443,37 @@ const IssueDetail = () => {
                     </form>
                 </div>
             </div>
+            
+            {/* --- MODALE CANCELLAZIONE --- */}
+            {showDeleteModal && (
+                <div style={styles.modalOverlay}>
+                    <div style={styles.modalContent}>
+                        <h3 style={styles.modalTitle}>Elimina Commento</h3>
+                        <p style={styles.modalText}>
+                            Sei sicuro di voler eliminare questo commento?<br/>
+                            Questa azione è <strong>irreversibile</strong>.
+                        </p>
+                        <div style={styles.modalActions}>
+                            <button 
+                                style={styles.btnCancel} 
+                                onClick={cancelDelete}
+                                onMouseOver={(e) => e.target.style.backgroundColor = '#e2e8f0'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = '#edf2f7'}
+                            >
+                                Annulla
+                            </button>
+                            <button 
+                                style={styles.btnConfirm} 
+                                onClick={confirmDelete}
+                                onMouseOver={(e) => e.target.style.backgroundColor = '#c53030'}
+                                onMouseOut={(e) => e.target.style.backgroundColor = '#e53e3e'}
+                            >
+                                Elimina
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     </div>

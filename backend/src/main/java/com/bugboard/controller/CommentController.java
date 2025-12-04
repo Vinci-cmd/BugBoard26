@@ -21,7 +21,7 @@ public class CommentController {
 
     // Endpoint: POST /api/issues/{id}/comments
     @PostMapping("/{issueId}/comments")
-    public ResponseEntity<?> postComment(@PathVariable Long issueId, @Valid @RequestBody CommentDTO req) {
+    public ResponseEntity<?> postComment(@PathVariable Long issueId, @RequestBody CommentDTO req) {
         try {
             // MODIFICA: Passiamo issueId, testo E autoreId al service
             Comment nuovoCommento = commentService.addComment(issueId, req.getTesto(), req.getAutoreId());
@@ -35,6 +35,20 @@ public class CommentController {
         }
     }
 
+    @DeleteMapping("/{issueId}/comments/{commentId}")
+    public ResponseEntity<?> deleteComment(
+            @PathVariable Long issueId, // Lo lasciamo per coerenza col path, anche se non lo usiamo
+            @PathVariable Integer commentId, 
+            @RequestParam Integer adminId) { // Parametro fondamentale per il controllo sicurezza
+        try {
+            commentService.deleteComment(commentId, adminId);
+            return ResponseEntity.ok("Commento eliminato con successo.");
+        } catch (RuntimeException e) {
+            // Ritorna 403 (Forbidden) o 400 (Bad Request) in base all'errore
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+    }
+    
     // Endpoint: GET /api/issues/{id}/comments
     @GetMapping("/{issueId}/comments")
     public ResponseEntity<List<Comment>> getComments(@PathVariable Integer issueId) {

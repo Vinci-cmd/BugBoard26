@@ -9,11 +9,11 @@ import jakarta.validation.constraints.Size;
 public class IssueDTO {
 
     @NotBlank(message = "Il titolo è obbligatorio")
-    @Size(min = 5, max = 100, message = "Il titolo deve avere tra 5 e 100 caratteri")
+    @Size(min = 1, max = 1000, message = "Il titolo deve avere tra 5 e 100 caratteri")
     private String titolo;
 
     @NotBlank(message = "La descrizione è obbligatoria")
-    @Size(min = 10, message = "La descrizione deve essere di almeno 10 caratteri")
+    @Size(min = 1, message = "La descrizione deve essere di almeno 10 caratteri")
     private String descrizione;
     
     @NotNull(message = "Il tipo è obbligatorio")

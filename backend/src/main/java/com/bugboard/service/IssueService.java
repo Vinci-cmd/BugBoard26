@@ -85,4 +85,23 @@ public class IssueService {
         return issueDAO.findById(id) // Assicurati che IssueDAO accetti Long o Integer coerentemente
                 .orElseThrow(() -> new RuntimeException("Issue non trovata con ID: " + id));
     }
+    
+    public void deleteIssue(Long issueId, Integer requestorId) {
+        // 1. Chi sta chiedendo la cancellazione?
+        User requestor = userDAO.findById(requestorId)
+                .orElseThrow(() -> new RuntimeException("Utente non trovato con ID: " + requestorId));
+
+        // 2. Controllo Ruolo: SOLO ADMIN
+        if (requestor.getRuolo() != UserRole.ADMIN) {
+            throw new RuntimeException("ACCESSO NEGATO: Solo gli admin possono eliminare le issue.");
+        }
+
+        // 3. Verifica esistenza
+        if (!issueDAO.existsById(issueId)) {
+            throw new RuntimeException("Issue non trovata con ID: " + issueId);
+        }
+
+        // 4. Cancellazione (A cascata eliminerà anche i commenti grazie al CascadeType.ALL nel Model)
+        issueDAO.deleteById(issueId);
+    }
 }

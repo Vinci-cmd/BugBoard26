@@ -7,9 +7,7 @@ public class CommentDTO {
     
     @NotBlank(message = "Il testo del commento non può essere vuoto")
     private String testo;
-
-    @NotNull(message = "L'autore è obbligatorio")
-    private Integer autoreId;
+    private Integer autoreId; // Nuovo campo fondamentale!
 
     // Costruttore vuoto (obbligatorio per Jackson)
     public CommentDTO() {}

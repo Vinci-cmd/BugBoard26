@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import IssueService from '../services/IssueService';
+import AuthService from '../services/AuthService';
 import IssueCard from '../components/IssueCard';
 
 const Dashboard = () => {
@@ -15,6 +16,10 @@ const Dashboard = () => {
         priorita: '',
         tipo: ''
     });
+
+    // --- STATI PER LA MODALE DI CANCELLAZIONE ---
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [issueToDelete, setIssueToDelete] = useState(null);
 
     const fetchIssues = async () => {
         setLoading(true);
@@ -43,16 +48,53 @@ const Dashboard = () => {
         }));
     };
 
-    // --- STILI AGGIORNATI PER MATCHARE IL DESIGN ---
+    // --- LOGICA CANCELLAZIONE ---
+    
+    // 1. Chiamata dalla Card: Apre la modale
+    const handleDeleteClick = (issueId) => {
+        setIssueToDelete(issueId);
+        setShowDeleteModal(true);
+    };
+
+    // 2. Annulla
+    const cancelDelete = () => {
+        setShowDeleteModal(false);
+        setIssueToDelete(null);
+    };
+
+    // 3. Conferma ed esegue
+    const confirmDelete = async () => {
+        if (!issueToDelete) return;
+        
+        const currentUser = AuthService.getCurrentUser();
+        // Doppio controllo sicurezza client-side
+        if (!currentUser || currentUser.ruolo !== 'ADMIN') {
+            alert("Non autorizzato.");
+            return;
+        }
+
+        try {
+            await IssueService.delete(issueToDelete, currentUser.id);
+            // Rimuoviamo l'issue dalla lista locale per evitare reload inutile
+            setIssues(prev => prev.filter(i => i.id !== issueToDelete));
+            setShowDeleteModal(false);
+            setIssueToDelete(null);
+        } catch (err) {
+            console.error("Errore cancellazione:", err);
+            alert("Errore durante l'eliminazione dell'issue.");
+        }
+    };
+
+    // --- STILI ---
     const styles = {
         pageWrapper: {
-            backgroundColor: '#f8f9fa', // Grigio molto chiaro, moderno
+            backgroundColor: '#f8f9fa',
             minHeight: '100vh',
             padding: '2rem 1rem',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
         },
         container: { 
-            maxWidth: '1100px', // Leggermente più largo
+            maxWidth: '1100px',
             margin: '0 auto',
         },
         headerRow: {
@@ -60,22 +102,17 @@ const Dashboard = () => {
             justifyContent: 'space-between', 
             alignItems: 'center',
             marginBottom: '2rem',
-            paddingBottom: '0', // Rimosso il bordo inferiore, ora è più pulito
         },
         pageTitle: {
             margin: 0,
             fontSize: '2rem',
-            color: '#1a202c', // Quasi nero
+            color: '#1a202c',
             fontWeight: '700',
             letterSpacing: '-0.025em'
         },
-        buttonGroup: {
-            display: 'flex',
-            gap: '12px'
-        },
-        // Bottone Verde (Create)
+        buttonGroup: { display: 'flex', gap: '12px' },
         createButton: {
-            backgroundColor: '#48bb78', // Un verde più "soft" e moderno
+            backgroundColor: '#48bb78',
             color: 'white',
             border: 'none',
             padding: '0.6rem 1.2rem',
@@ -91,7 +128,7 @@ const Dashboard = () => {
         },
         // Bottone Blu (Refresh - Aggiornato per essere blu pieno come nell'immagine)
         refreshButton: {
-            backgroundColor: '#4299e1', // Blu solido
+            backgroundColor: '#4299e1',
             border: 'none',
             color: 'white',
             padding: '0.6rem 1.2rem',
@@ -112,8 +149,8 @@ const Dashboard = () => {
             marginBottom: '2rem', 
             padding: '1.5rem', 
             backgroundColor: '#ffffff', 
-            borderRadius: '12px', // Angoli più arrotondati
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // Ombra moderna
+            borderRadius: '12px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
             border: '1px solid #e2e8f0',
             flexWrap: 'wrap',
             alignItems: 'flex-end'
@@ -143,7 +180,6 @@ const Dashboard = () => {
             outline: 'none',
             transition: 'border-color 0.2s'
         },
-        // Stati di caricamento
         loadingState: { textAlign: 'center', padding: '4rem', color: '#718096' },
         emptyState: { 
             textAlign: 'center', 
@@ -164,14 +200,71 @@ const Dashboard = () => {
         listContainer: {
             display: 'flex', 
             flexDirection: 'column', 
-            gap: '1rem' // Spazio tra le card aumentato leggermente
+            gap: '1rem'
+        },
+
+        // --- MODALE ---
+        modalOverlay: {
+            position: 'fixed',
+            top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+            backdropFilter: 'blur(3px)'
+        },
+        modalContent: {
+            backgroundColor: 'white',
+            padding: '2rem',
+            borderRadius: '12px',
+            width: '90%',
+            maxWidth: '400px',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+            textAlign: 'center',
+            border: '1px solid #e2e8f0'
+        },
+        modalTitle: {
+            marginTop: 0,
+            color: '#1a202c',
+            fontSize: '1.25rem',
+            fontWeight: 'bold',
+            marginBottom: '0.5rem'
+        },
+        modalText: {
+            color: '#718096',
+            marginBottom: '1.5rem',
+            lineHeight: '1.5'
+        },
+        modalActions: {
+            display: 'flex',
+            justifyContent: 'center',
+            gap: '1rem'
+        },
+        btnCancel: {
+            padding: '0.6rem 1.2rem',
+            backgroundColor: '#edf2f7',
+            color: '#4a5568',
+            border: 'none',
+            borderRadius: '6px',
+            fontWeight: '600',
+            cursor: 'pointer'
+        },
+        btnConfirm: {
+            padding: '0.6rem 1.2rem',
+            backgroundColor: '#e53e3e',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            boxShadow: '0 4px 6px rgba(229, 62, 62, 0.2)'
         }
     };
 
     return (
         <div style={styles.pageWrapper}>
             <div style={styles.container}>
-                {/* Intestazione Pagina */}
                 <div style={styles.headerRow}>
                     <h1 style={styles.pageTitle}>Dashboard Issue</h1>
                     
@@ -196,7 +289,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* BARRA DEI FILTRI */}
+                {/* FILTRI */}
                 <div style={styles.filterBar}>
                     <div style={styles.selectGroup}>
                         <label style={styles.label}>Stato</label>
@@ -231,7 +324,7 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* LISTA O MESSAGGI DI STATO */}
+                {/* LISTA */}
                 {loading ? (
                     <div style={styles.loadingState}>
                         <p>Caricamento dati in corso...</p>
@@ -248,11 +341,42 @@ const Dashboard = () => {
                 ) : (
                     <div style={styles.listContainer}>
                         {issues.map(issue => (
-                            <IssueCard key={issue.id} issue={issue} />
+                            <IssueCard 
+                                key={issue.id} 
+                                issue={issue} 
+                                onDelete={handleDeleteClick} // Passiamo la funzione al figlio
+                            />
                         ))}
                     </div>
                 )}
             </div>
+
+            {/* MODALE DI CONFERMA CANCELLAZIONE */}
+            {showDeleteModal && (
+                <div style={styles.modalOverlay}>
+                    <div style={styles.modalContent}>
+                        <h3 style={styles.modalTitle}>Elimina Issue</h3>
+                        <p style={styles.modalText}>
+                            Sei sicuro di voler eliminare questa segnalazione?<br/>
+                            Verranno eliminati anche tutti i commenti associati.
+                        </p>
+                        <div style={styles.modalActions}>
+                            <button 
+                                style={styles.btnCancel} 
+                                onClick={cancelDelete}
+                            >
+                                Annulla
+                            </button>
+                            <button 
+                                style={styles.btnConfirm} 
+                                onClick={confirmDelete}
+                            >
+                                Elimina definitivamente
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
