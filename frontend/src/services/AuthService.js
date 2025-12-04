@@ -5,14 +5,9 @@ const AuthService = {
         try {
             const response = await api.post('/auth/login', { email, password });
             
-            // MODIFICA CRITICA:
-            // Il backend restituisce l'utente (response.data) ma non un campo 'token'.
-            // Se riceviamo dati (cioè l'utente), consideriamo il login valido.
             if (response.data && response.data.id) {
-                // Creiamo un "fake token" usando l'ID dell'utente per soddisfare la PrivateRoute
-                // In futuro qui salveremo il vero JWT
+                // Token fittizio basato sull'ID (come da tua implementazione attuale)
                 const fakeToken = `basic-token-user-${response.data.id}`;
-                
                 localStorage.setItem('token', fakeToken);
                 localStorage.setItem('user', JSON.stringify(response.data)); 
             }
@@ -36,6 +31,13 @@ const AuthService = {
     
     isAuthenticated: () => {
         return !!localStorage.getItem('token');
+    },
+
+    // --- NUOVO METODO PER CREARE UTENTI (Admin Only) ---
+    createUser: async (userData, adminId) => {
+        // Chiama: POST /api/auth/create-user?adminId=1
+        const response = await api.post(`/auth/create-user?adminId=${adminId}`, userData);
+        return response.data;
     }
 };
 

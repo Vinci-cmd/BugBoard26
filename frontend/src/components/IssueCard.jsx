@@ -2,25 +2,40 @@ import { Link } from 'react-router-dom';
 
 const IssueCard = ({ issue }) => {
 
-    // Helper per i colori dei badge (Stile più "pastello/professionale")
+    // 1. Definiamo il "Tema" della card in base al Tipo (Bug=Rosso, Feature=Verde, ecc.)
+    const getThemeColor = (type) => {
+        switch (type) {
+            case 'BUG':
+                return { border: '#e53e3e', bg: '#fff5f5', text: '#c53030' }; // Rosso
+            case 'FEATURE':
+                return { border: '#38a169', bg: '#f0fff4', text: '#2f855a' }; // Verde
+            case 'QUESTION':
+                return { border: '#3182ce', bg: '#ebf8ff', text: '#2b6cb0' }; // Blu
+            default:
+                return { border: '#718096', bg: '#edf2f7', text: '#4a5568' }; // Grigio
+        }
+    };
+
+    const theme = getThemeColor(issue.tipo);
+
+    // 2. Stile specifico per lo Stato (TODO, IN_PROGRESS, DONE) - Stile "Post-it"
     const getStatusStyle = (status) => {
-        switch(status) {
-            case 'TODO': 
-                return { bg: '#fff3cd', text: '#856404', border: '#ffeeba' }; // Giallo accademico
-            case 'IN_PROGRESS': 
-                return { bg: '#d1ecf1', text: '#0c5460', border: '#bee5eb' }; // Azzurro neutro
-            case 'DONE': 
-                return { bg: '#d4edda', text: '#155724', border: '#c3e6cb' }; // Verde successo
-            default: 
-                return { bg: '#e2e3e5', text: '#383d41', border: '#d6d8db' }; // Grigio
+        switch (status) {
+            case 'TODO':
+                return { bg: '#feebc8', text: '#744210' }; // Arancio/Beige chiaro
+            case 'IN_PROGRESS':
+                return { bg: '#bee3f8', text: '#2c5282' }; // Azzurro
+            case 'DONE':
+                return { bg: '#c6f6d5', text: '#276749' }; // Verde menta
+            default:
+                return { bg: '#e2e8f0', text: '#4a5568' };
         }
     };
 
     const statusStyle = getStatusStyle(issue.stato);
 
-    // Mappa icone per tipo (Unicode, così non devi installare nulla)
     const getTypeIcon = (type) => {
-        switch(type) {
+        switch (type) {
             case 'BUG': return '🐛';
             case 'FEATURE': return '✨';
             case 'QUESTION': return '❓';
@@ -32,99 +47,140 @@ const IssueCard = ({ issue }) => {
         card: {
             display: 'block',
             backgroundColor: '#ffffff',
-            border: '1px solid #e0e0e0',
-            borderLeft: `5px solid ${statusStyle.text}`, // Bordo colorato a sinistra
-            borderRadius: '4px', // Angoli meno arrotondati, più "seri"
-            padding: '1.2rem',
-            marginBottom: '1rem',
+            borderRadius: '8px',
+            border: '1px solid #e2e8f0',
+            borderLeft: `5px solid ${theme.border}`, // Il bordo colorato a sinistra
+            marginBottom: '1.2rem',
             textDecoration: 'none',
-            color: '#333',
-            boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-            transition: 'transform 0.2s ease-in-out',
-            fontFamily: '"Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+            color: 'inherit',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.02)', // Ombra molto leggera
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            overflow: 'hidden', // Per contenere il footer background
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+        },
+        // Container per il padding interno (separato dal footer)
+        contentPadding: {
+            padding: '1.2rem 1.5rem',
         },
         header: {
             display: 'flex',
             justifyContent: 'space-between',
-            alignItems: 'center',
+            alignItems: 'flex-start',
             marginBottom: '0.8rem',
-            borderBottom: '1px solid #f0f0f0',
-            paddingBottom: '0.5rem'
         },
         title: {
             margin: 0,
             fontSize: '1.1rem',
             fontWeight: '600',
-            color: '#2c3e50' // Blu scuro "istituzionale"
+            color: '#2d3748',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
         },
-        badge: {
-            padding: '0.25rem 0.6rem',
-            borderRadius: '4px',
-            fontSize: '0.75rem',
-            fontWeight: '600',
-            textTransform: 'uppercase',
-            letterSpacing: '0.5px',
+        statusBadge: {
             backgroundColor: statusStyle.bg,
             color: statusStyle.text,
-            border: `1px solid ${statusStyle.border}`
+            padding: '0.25rem 0.75rem',
+            borderRadius: '4px',
+            fontSize: '0.75rem',
+            fontWeight: '700',
+            letterSpacing: '0.05em',
+            textTransform: 'uppercase'
         },
         description: {
             fontSize: '0.95rem',
-            color: '#555',
-            lineHeight: '1.5',
-            margin: '0 0 1rem 0'
+            color: '#718096',
+            lineHeight: '1.6',
+            margin: 0,
+            minHeight: '20px'
         },
+        // Footer grigio chiaro
         footer: {
+            backgroundColor: '#f7fafc',
+            borderTop: '1px solid #edf2f7',
+            padding: '0.8rem 1.5rem',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             fontSize: '0.85rem',
-            color: '#777',
-            backgroundColor: '#f9f9f9',
-            margin: '-1.2rem -1.2rem -1.2rem -1.2rem', // Hack per estendere il footer ai bordi
-            padding: '0.8rem 1.2rem',
-            marginTop: '1rem',
-            borderTop: '1px solid #eee'
+            color: '#718096'
         },
-        metaItem: {
+        metaGroup: {
             display: 'flex',
             alignItems: 'center',
-            gap: '0.5rem'
+            gap: '6px'
+        },
+        metaLabel: {
+            fontWeight: '500'
+        },
+        // Le "pillole" colorate nel footer (es. BUG, HIGH)
+        colorBadge: {
+            backgroundColor: theme.bg,
+            color: theme.text,
+            padding: '2px 8px',
+            borderRadius: '4px',
+            fontWeight: '700',
+            fontSize: '0.75rem',
+            textTransform: 'uppercase'
+        },
+        // Badge specifico per la priorità (può ereditare il tema o averne uno suo)
+        priorityBadge: {
+            backgroundColor: issue.priorita === 'HIGH' ? '#fff5f5' : (issue.priorita === 'LOW' ? '#f0fff4' : '#ebf8ff'),
+            color: issue.priorita === 'HIGH' ? '#c53030' : (issue.priorita === 'LOW' ? '#2f855a' : '#2b6cb0'),
+            padding: '2px 8px',
+            borderRadius: '4px',
+            fontWeight: '700',
+            fontSize: '0.75rem',
+            textTransform: 'uppercase'
         }
     };
 
     return (
-        <Link to={`/issue/${issue.id}`} style={styles.card}>
-            {/* INTESTAZIONE: Titolo e Stato */}
-            <div style={styles.header}>
-                <h3 style={styles.title}>
-                    <span style={{marginRight: '8px'}}>{getTypeIcon(issue.tipo)}</span>
-                    {issue.titolo}
-                </h3>
-                <span style={styles.badge}>{issue.stato}</span>
+        <Link 
+            to={`/issue/${issue.id}`} 
+            style={styles.card}
+            onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.05)';
+            }}
+            onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+            }}
+        >
+            <div style={styles.contentPadding}>
+                {/* HEADER: Titolo e Stato */}
+                <div style={styles.header}>
+                    <div style={styles.title}>
+                        <span>{getTypeIcon(issue.tipo)}</span>
+                        {issue.titolo}
+                    </div>
+                    <span style={styles.statusBadge}>{issue.stato}</span>
+                </div>
+
+                {/* CORPO: Descrizione */}
+                <p style={styles.description}>
+                    {issue.descrizione 
+                        ? (issue.descrizione.length > 100 ? issue.descrizione.substring(0, 100) + '...' : issue.descrizione) 
+                        : 'Nessuna descrizione.'}
+                </p>
             </div>
 
-            {/* CORPO: Descrizione */}
-            <p style={styles.description}>
-                {issue.descrizione ? issue.descrizione.substring(0, 120) + (issue.descrizione.length > 120 ? '...' : '') : 'Nessuna descrizione disponibile.'}
-            </p>
-
-            {/* PIÈ DI PAGINA: Metadati stile "tabella" */}
+            {/* FOOTER: Dettagli tecnici con badge */}
             <div style={styles.footer}>
-                <div style={styles.metaItem}>
-                    <span>Tipo:</span>
-                    <strong style={{color: '#333'}}>{issue.tipo}</strong>
+                <div style={styles.metaGroup}>
+                    <span style={styles.metaLabel}>Tipo:</span>
+                    <span style={styles.colorBadge}>{issue.tipo}</span>
                 </div>
-                <div style={styles.metaItem}>
-                    <span>Priorità:</span>
-                    <strong style={{
-                        color: issue.priorita === 'HIGH' ? '#dc3545' : 'inherit'
-                    }}>
-                        {issue.priorita}
-                    </strong>
+
+                <div style={styles.metaGroup}>
+                    <span style={styles.metaLabel}>Priorità:</span>
+                    {/* Uso uno stile specifico per priorità, oppure riuso theme */}
+                    <span style={styles.priorityBadge}>{issue.priorita}</span>
                 </div>
-                <div style={styles.metaItem}>
-                    <span>Autore:</span> 
+
+                <div style={styles.metaGroup}>
+                    <span style={styles.metaLabel}>Autore:</span> 
                     <span>{issue.autore?.nomeCompleto || 'N/D'}</span>
                 </div>
             </div>

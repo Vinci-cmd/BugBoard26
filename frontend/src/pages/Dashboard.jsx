@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // <--- 1. Importiamo l'hook per navigare
+import { useNavigate } from 'react-router-dom';
 import IssueService from '../services/IssueService';
 import IssueCard from '../components/IssueCard';
 
 const Dashboard = () => {
-    const navigate = useNavigate(); // <--- 2. Inizializziamo la navigazione
+    const navigate = useNavigate();
     const [issues, setIssues] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -43,77 +43,129 @@ const Dashboard = () => {
         }));
     };
 
+    // --- STILI AGGIORNATI PER MATCHARE IL DESIGN ---
     const styles = {
         pageWrapper: {
-            backgroundColor: '#f4f6f9',
-            minHeight: 'calc(100vh - 80px)',
-            padding: '2rem 1rem'
+            backgroundColor: '#f8f9fa', // Grigio molto chiaro, moderno
+            minHeight: '100vh',
+            padding: '2rem 1rem',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
         },
         container: { 
-            maxWidth: '1000px',
+            maxWidth: '1100px', // Leggermente più largo
             margin: '0 auto',
-            fontFamily: '"Segoe UI", Roboto, Helvetica, Arial, sans-serif'
         },
         headerRow: {
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center',
-            marginBottom: '1.5rem',
-            borderBottom: '2px solid #e9ecef',
-            paddingBottom: '1rem'
+            marginBottom: '2rem',
+            paddingBottom: '0', // Rimosso il bordo inferiore, ora è più pulito
         },
         pageTitle: {
             margin: 0,
             fontSize: '2rem',
-            color: '#2c3e50',
-            fontFamily: '"Georgia", serif',
-            fontWeight: 'bold'
+            color: '#1a202c', // Quasi nero
+            fontWeight: '700',
+            letterSpacing: '-0.025em'
         },
-        // Gruppo di bottoni in alto a destra
         buttonGroup: {
             display: 'flex',
-            gap: '10px'
+            gap: '12px'
         },
-        // Stile per il bottone "Nuova Issue"
+        // Bottone Verde (Create)
         createButton: {
-            backgroundColor: '#28a745', // Verde successo
+            backgroundColor: '#48bb78', // Un verde più "soft" e moderno
             color: 'white',
             border: 'none',
             padding: '0.6rem 1.2rem',
-            borderRadius: '4px',
+            borderRadius: '6px',
             cursor: 'pointer',
             fontWeight: '600',
-            fontSize: '0.9rem',
+            fontSize: '0.95rem',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+            transition: 'background-color 0.2s'
         },
+        // Bottone Blu (Refresh - Aggiornato per essere blu pieno come nell'immagine)
         refreshButton: {
-            backgroundColor: 'white',
-            border: '1px solid #2c3e50',
-            color: '#2c3e50',
+            backgroundColor: '#4299e1', // Blu solido
+            border: 'none',
+            color: 'white',
             padding: '0.6rem 1.2rem',
-            borderRadius: '4px',
+            borderRadius: '6px',
             cursor: 'pointer',
             fontWeight: '600',
-            fontSize: '0.9rem',
+            fontSize: '0.95rem',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            transition: 'all 0.2s ease'
+            boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
+            transition: 'background-color 0.2s'
         },
+        // Card bianca per i filtri
         filterBar: { 
-            display: 'flex', gap: '1rem', marginBottom: '2rem', padding: '1.5rem', 
-            backgroundColor: '#ffffff', borderRadius: '6px', 
-            boxShadow: '0 2px 8px rgba(0,0,0,0.05)', border: '1px solid #e0e0e0', flexWrap: 'wrap' 
+            display: 'flex', 
+            gap: '1.5rem', 
+            marginBottom: '2rem', 
+            padding: '1.5rem', 
+            backgroundColor: '#ffffff', 
+            borderRadius: '12px', // Angoli più arrotondati
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // Ombra moderna
+            border: '1px solid #e2e8f0',
+            flexWrap: 'wrap',
+            alignItems: 'flex-end'
         },
-        label: { display: 'block', fontSize: '0.8rem', fontWeight: '600', color: '#6c757d', marginBottom: '0.3rem', textTransform: 'uppercase' },
-        selectGroup: { flex: 1, minWidth: '200px' },
-        select: { width: '100%', padding: '0.7rem', borderRadius: '4px', border: '1px solid #ced4da', backgroundColor: '#f8f9fa', fontSize: '1rem', color: '#495057', outline: 'none', cursor: 'pointer' },
-        loadingState: { textAlign: 'center', padding: '3rem', color: '#6c757d', fontSize: '1.2rem' },
-        emptyState: { textAlign: 'center', padding: '4rem 2rem', backgroundColor: 'white', borderRadius: '8px', border: '1px dashed #ced4da', color: '#6c757d' },
-        errorMsg: { padding: '1rem', backgroundColor: '#f8d7da', color: '#721c24', border: '1px solid #f5c6cb', borderRadius: '4px', marginBottom: '1rem' }
+        selectGroup: { 
+            flex: 1, 
+            minWidth: '200px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px'
+        },
+        label: { 
+            fontSize: '0.75rem', 
+            fontWeight: '700', 
+            color: '#718096', 
+            textTransform: 'uppercase',
+            letterSpacing: '0.05em'
+        },
+        select: { 
+            width: '100%', 
+            padding: '0.6rem', 
+            borderRadius: '6px', 
+            border: '1px solid #cbd5e0', 
+            backgroundColor: '#fff', 
+            fontSize: '0.95rem', 
+            color: '#2d3748', 
+            outline: 'none',
+            transition: 'border-color 0.2s'
+        },
+        // Stati di caricamento
+        loadingState: { textAlign: 'center', padding: '4rem', color: '#718096' },
+        emptyState: { 
+            textAlign: 'center', 
+            padding: '4rem 2rem', 
+            backgroundColor: 'white', 
+            borderRadius: '12px', 
+            border: '1px dashed #cbd5e0', 
+            color: '#718096' 
+        },
+        errorMsg: { 
+            padding: '1rem', 
+            backgroundColor: '#fff5f5', 
+            color: '#c53030', 
+            border: '1px solid #feb2b2', 
+            borderRadius: '6px', 
+            marginBottom: '1rem' 
+        },
+        listContainer: {
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '1rem' // Spazio tra le card aumentato leggermente
+        }
     };
 
     return (
@@ -124,23 +176,22 @@ const Dashboard = () => {
                     <h1 style={styles.pageTitle}>Dashboard Issue</h1>
                     
                     <div style={styles.buttonGroup}>
-                        {/* 3. BOTTONE NUOVA ISSUE AGGIUNTO */}
                         <button 
                             onClick={() => navigate('/create')}
                             style={styles.createButton}
-                            onMouseOver={(e) => e.target.style.backgroundColor = '#218838'}
-                            onMouseOut={(e) => e.target.style.backgroundColor = '#28a745'}
+                            onMouseOver={(e) => e.target.style.backgroundColor = '#38a169'}
+                            onMouseOut={(e) => e.target.style.backgroundColor = '#48bb78'}
                         >
-                            <span>➕</span> Nuova Issue
+                            <span>+</span> Nuova Issue
                         </button>
 
                         <button 
                             onClick={fetchIssues} 
                             style={styles.refreshButton}
-                            onMouseOver={(e) => { e.target.style.backgroundColor = '#2c3e50'; e.target.style.color = 'white'; }}
-                            onMouseOut={(e) => { e.target.style.backgroundColor = 'white'; e.target.style.color = '#2c3e50'; }}
+                            onMouseOver={(e) => e.target.style.backgroundColor = '#3182ce'}
+                            onMouseOut={(e) => e.target.style.backgroundColor = '#4299e1'}
                         >
-                            <span>🔄</span> Aggiorna
+                            <span>↻</span> Aggiorna
                         </button>
                     </div>
                 </div>
@@ -148,7 +199,7 @@ const Dashboard = () => {
                 {/* BARRA DEI FILTRI */}
                 <div style={styles.filterBar}>
                     <div style={styles.selectGroup}>
-                        <label style={styles.label}>Filtra per Stato</label>
+                        <label style={styles.label}>Stato</label>
                         <select name="stato" style={styles.select} onChange={handleFilterChange}>
                             <option value="">Tutti gli Stati</option>
                             <option value="TODO">To Do</option>
@@ -161,9 +212,10 @@ const Dashboard = () => {
                         <label style={styles.label}>Priorità</label>
                         <select name="priorita" style={styles.select} onChange={handleFilterChange}>
                             <option value="">Tutte le Priorità</option>
-                            <option value="LOW">Bassa</option>
-                            <option value="MEDIUM">Media</option>
-                            <option value="HIGH">Alta</option>
+                            <option value="LOW">Low</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="HIGH">High</option>
+                            <option value="CRITICAL">Critical</option>
                         </select>
                     </div>
 
@@ -174,6 +226,7 @@ const Dashboard = () => {
                             <option value="BUG">Bug</option>
                             <option value="FEATURE">Feature</option>
                             <option value="QUESTION">Question</option>
+                            <option value="DOCUMENTATION">Documentation</option>
                         </select>
                     </div>
                 </div>
@@ -193,9 +246,8 @@ const Dashboard = () => {
                         <p>Prova a modificare i filtri o crea una nuova issue.</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={styles.listContainer}>
                         {issues.map(issue => (
-                            // IssueCard gestisce già il click per andare al dettaglio
                             <IssueCard key={issue.id} issue={issue} />
                         ))}
                     </div>

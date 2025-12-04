@@ -1,5 +1,4 @@
 import api from '../api/axiosConfig';
-import AuthService from './AuthService'; // Importa AuthService
 
 const IssueService = {
     // Metodo esclusivo per la Dashboard (Studente A)
@@ -24,23 +23,20 @@ const IssueService = {
 
     // Per Studente B (Creazione con Immagine)
     create: async (formData) => {
-        // Ora che axiosConfig è pulito, basta passare formData.
-        // Axios rileverà l'oggetto FormData e imposterà automaticamente:
-        // Content-Type: multipart/form-data; boundary=----WebKitFormBoundary...
+        // Axios gestisce automaticamente il Content-Type multipart/form-data
         const response = await api.post('/issues', formData);
         return response.data;
     },
     
-    addComment: async (issueId, text) => {
-        // Recupera l'utente loggato per mandare il suo ID
-        const user = AuthService.getCurrentUser();
-        const autoreId = user ? user.id : null;
-
+    // --- MODIFICA FONDAMENTALE PER FUNZIONALITÀ 5 ---
+    // Ora accettiamo anche autoreId e lo inviamo al backend
+    addComment: async (issueId, text, autoreId) => {
         const response = await api.post(`/issues/${issueId}/comments`, { 
             testo: text,
-            autoreId: autoreId // Ora inviamo anche l'ID!
+            autoreId: autoreId // <--- Nuovo campo inviato
         });
         return response.data;
     }
 };
+
 export default IssueService;
