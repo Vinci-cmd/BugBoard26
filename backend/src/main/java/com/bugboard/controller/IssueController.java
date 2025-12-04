@@ -1,5 +1,6 @@
 package com.bugboard.controller;
 
+import jakarta.validation.Valid; // Importante!
 import com.bugboard.dto.IssueDTO;
 import com.bugboard.model.Issue;
 import com.bugboard.model.IssuePriority;
@@ -30,7 +31,7 @@ public class IssueController {
     // 2. Usiamo @RequestPart invece di @RequestBody
 @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Issue> create(
-            @RequestPart("issue") IssueDTO req,
+            @Valid @RequestPart("issue") IssueDTO req,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) {
         try {

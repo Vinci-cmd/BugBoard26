@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import IssueService from "../services/IssueService";
+<<<<<<< HEAD
 import AuthService from "../services/AuthService";
+=======
+import AuthService from "../services/AuthService"; // <--- Import necessario
+>>>>>>> main
 
 const IssueDetail = () => {
   const { id } = useParams();
@@ -38,7 +42,13 @@ const IssueDetail = () => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
+<<<<<<< HEAD
     const currentUser = AuthService.getCurrentUser();
+=======
+    // --- RECUPERO UTENTE CORRENTE ---
+    const currentUser = AuthService.getCurrentUser();
+    
+>>>>>>> main
     if (!currentUser || !currentUser.id) {
         alert("Errore: Utente non loggato. Effettua nuovamente il login.");
         navigate('/login');
@@ -46,6 +56,7 @@ const IssueDetail = () => {
     }
 
     try {
+<<<<<<< HEAD
       await IssueService.addComment(id, newComment, currentUser.id);
       await fetchIssue();
       setNewComment(""); 
@@ -92,6 +103,20 @@ const IssueDetail = () => {
 
 
   // --- STILI ---
+=======
+      // Passiamo l'ID dell'utente reale al service
+      await IssueService.addComment(id, newComment, currentUser.id);
+      
+      await fetchIssue(); // Ricarica per mostrare il nuovo commento
+      setNewComment(""); 
+    } catch (err) {
+      console.error("Errore invio commento:", err);
+      alert("Errore nell'invio del commento. Controlla la console.");
+    }
+  };
+
+  // --- STILI (Invariati) ---
+>>>>>>> main
   const styles = {
     pageWrapper: {
         backgroundColor: '#f4f6f9',
@@ -219,6 +244,7 @@ const IssueDetail = () => {
     timestamp: { color: '#999' },
     commentText: { margin: 0, color: '#444', lineHeight: '1.5' },
 
+<<<<<<< HEAD
     deleteBtn: {
         backgroundColor: 'transparent',
         border: 'none',
@@ -234,6 +260,8 @@ const IssueDetail = () => {
         transition: 'background-color 0.2s'
     },
 
+=======
+>>>>>>> main
     formCard: {
         backgroundColor: '#fff',
         padding: '1.5rem',
@@ -384,6 +412,7 @@ const IssueDetail = () => {
                         issue.comments.map((c) => (
                             <div key={c.id} style={styles.commentItem}>
                                 <div style={styles.commentHeader}>
+<<<<<<< HEAD
                                     <div style={styles.authorInfo}>
                                         <span style={styles.authorName}>
                                             {c.autore ? c.autore.nomeCompleto : "Utente"}
@@ -405,6 +434,14 @@ const IssueDetail = () => {
                                             🗑️ Elimina
                                         </button>
                                     )}
+=======
+                                    <span style={styles.authorName}>
+                                        {c.autore ? c.autore.nomeCompleto : "Utente"}
+                                    </span>
+                                    <span style={styles.timestamp}>
+                                        {new Date(c.dataOra).toLocaleString()}
+                                    </span>
+>>>>>>> main
                                 </div>
                                 <p style={styles.commentText}>{c.testo}</p>
                             </div>
@@ -473,4 +510,4 @@ const IssueDetail = () => {
   );
 };
 
-export default IssueDetail;
+export default IssueDetail; 

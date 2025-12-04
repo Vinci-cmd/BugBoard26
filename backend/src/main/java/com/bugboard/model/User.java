@@ -1,7 +1,10 @@
 package com.bugboard.model;
 
 import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonProperty; // <--- Import Fondamentale
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -13,14 +16,18 @@ public class User {
     private Integer id;
 
     @Column(nullable = false, unique = true)
+    @NotBlank(message = "L'email è obbligatoria")
+    @Email(message = "Email non valida")
     private String email;
 
     @Column(nullable = false)
-    // QUESTA È LA FIX: Permette di scrivere la password (in ingresso) ma non di leggerla (in uscita)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotBlank(message = "La password è obbligatoria")
+    @Size(min = 6, message = "La password deve avere almeno 6 caratteri") // Policy di sicurezza minima
     private String password;
 
     @Column(name = "nome_completo", nullable = false)
+    @NotBlank(message = "Il nome completo è obbligatorio")
     private String nomeCompleto;
 
     @Enumerated(EnumType.STRING)

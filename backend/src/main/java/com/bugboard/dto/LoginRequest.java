@@ -1,11 +1,16 @@
 package com.bugboard.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 public class LoginRequest {
 
-    // Campi privati per incapsulamento
+    @NotBlank(message = "L'email è obbligatoria")
+    @Email(message = "Formato email non valido")
     private String email;
-    private String password;
 
+    @NotBlank(message = "La password è obbligatoria")
+    private String password;
     // 1. Costruttore vuoto (ESSENZIALE per Jackson/JSON parsing)
     public LoginRequest() {
     }

@@ -48,6 +48,7 @@ const Dashboard = () => {
         }));
     };
 
+<<<<<<< HEAD
     // --- LOGICA CANCELLAZIONE ---
     
     // 1. Chiamata dalla Card: Apre la modale
@@ -89,12 +90,22 @@ const Dashboard = () => {
     const styles = {
         pageWrapper: {
             backgroundColor: '#f8f9fa',
+=======
+    // --- STILI AGGIORNATI PER MATCHARE IL DESIGN ---
+    const styles = {
+        pageWrapper: {
+            backgroundColor: '#f8f9fa', // Grigio molto chiaro, moderno
+>>>>>>> main
             minHeight: '100vh',
             padding: '2rem 1rem',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
         },
         container: { 
+<<<<<<< HEAD
             maxWidth: '1100px',
+=======
+            maxWidth: '1100px', // Leggermente più largo
+>>>>>>> main
             margin: '0 auto',
         },
         headerRow: {
@@ -102,10 +113,15 @@ const Dashboard = () => {
             justifyContent: 'space-between', 
             alignItems: 'center',
             marginBottom: '2rem',
+<<<<<<< HEAD
+=======
+            paddingBottom: '0', // Rimosso il bordo inferiore, ora è più pulito
+>>>>>>> main
         },
         pageTitle: {
             margin: 0,
             fontSize: '2rem',
+<<<<<<< HEAD
             color: '#1a202c',
             fontWeight: '700',
             letterSpacing: '-0.025em'
@@ -113,6 +129,19 @@ const Dashboard = () => {
         buttonGroup: { display: 'flex', gap: '12px' },
         createButton: {
             backgroundColor: '#48bb78',
+=======
+            color: '#1a202c', // Quasi nero
+            fontWeight: '700',
+            letterSpacing: '-0.025em'
+        },
+        buttonGroup: {
+            display: 'flex',
+            gap: '12px'
+        },
+        // Bottone Verde (Create)
+        createButton: {
+            backgroundColor: '#48bb78', // Un verde più "soft" e moderno
+>>>>>>> main
             color: 'white',
             border: 'none',
             padding: '0.6rem 1.2rem',
@@ -126,8 +155,13 @@ const Dashboard = () => {
             boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
             transition: 'background-color 0.2s'
         },
+        // Bottone Blu (Refresh - Aggiornato per essere blu pieno come nell'immagine)
         refreshButton: {
+<<<<<<< HEAD
             backgroundColor: '#4299e1',
+=======
+            backgroundColor: '#4299e1', // Blu solido
+>>>>>>> main
             border: 'none',
             color: 'white',
             padding: '0.6rem 1.2rem',
@@ -141,14 +175,20 @@ const Dashboard = () => {
             boxShadow: '0 2px 4px rgba(0,0,0,0.05)',
             transition: 'background-color 0.2s'
         },
+        // Card bianca per i filtri
         filterBar: { 
             display: 'flex', 
             gap: '1.5rem', 
             marginBottom: '2rem', 
             padding: '1.5rem', 
             backgroundColor: '#ffffff', 
+<<<<<<< HEAD
             borderRadius: '12px',
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+=======
+            borderRadius: '12px', // Angoli più arrotondati
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // Ombra moderna
+>>>>>>> main
             border: '1px solid #e2e8f0',
             flexWrap: 'wrap',
             alignItems: 'flex-end'
@@ -178,6 +218,10 @@ const Dashboard = () => {
             outline: 'none',
             transition: 'border-color 0.2s'
         },
+<<<<<<< HEAD
+=======
+        // Stati di caricamento
+>>>>>>> main
         loadingState: { textAlign: 'center', padding: '4rem', color: '#718096' },
         emptyState: { 
             textAlign: 'center', 
@@ -198,6 +242,7 @@ const Dashboard = () => {
         listContainer: {
             display: 'flex', 
             flexDirection: 'column', 
+<<<<<<< HEAD
             gap: '1rem'
         },
 
@@ -257,6 +302,9 @@ const Dashboard = () => {
             fontWeight: '600',
             cursor: 'pointer',
             boxShadow: '0 4px 6px rgba(229, 62, 62, 0.2)'
+=======
+            gap: '1rem' // Spazio tra le card aumentato leggermente
+>>>>>>> main
         }
     };
 
@@ -339,11 +387,15 @@ const Dashboard = () => {
                 ) : (
                     <div style={styles.listContainer}>
                         {issues.map(issue => (
+<<<<<<< HEAD
                             <IssueCard 
                                 key={issue.id} 
                                 issue={issue} 
                                 onDelete={handleDeleteClick} // Passiamo la funzione al figlio
                             />
+=======
+                            <IssueCard key={issue.id} issue={issue} />
+>>>>>>> main
                         ))}
                     </div>
                 )}
