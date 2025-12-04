@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import IssueService from "../services/IssueService";
-<<<<<<< HEAD
 import AuthService from "../services/AuthService";
-=======
-import AuthService from "../services/AuthService"; // <--- Import necessario
->>>>>>> main
 
 const IssueDetail = () => {
   const { id } = useParams();
@@ -42,13 +38,7 @@ const IssueDetail = () => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
-<<<<<<< HEAD
     const currentUser = AuthService.getCurrentUser();
-=======
-    // --- RECUPERO UTENTE CORRENTE ---
-    const currentUser = AuthService.getCurrentUser();
-    
->>>>>>> main
     if (!currentUser || !currentUser.id) {
         alert("Errore: Utente non loggato. Effettua nuovamente il login.");
         navigate('/login');
@@ -56,7 +46,6 @@ const IssueDetail = () => {
     }
 
     try {
-<<<<<<< HEAD
       await IssueService.addComment(id, newComment, currentUser.id);
       await fetchIssue();
       setNewComment(""); 
@@ -103,20 +92,6 @@ const IssueDetail = () => {
 
 
   // --- STILI ---
-=======
-      // Passiamo l'ID dell'utente reale al service
-      await IssueService.addComment(id, newComment, currentUser.id);
-      
-      await fetchIssue(); // Ricarica per mostrare il nuovo commento
-      setNewComment(""); 
-    } catch (err) {
-      console.error("Errore invio commento:", err);
-      alert("Errore nell'invio del commento. Controlla la console.");
-    }
-  };
-
-  // --- STILI (Invariati) ---
->>>>>>> main
   const styles = {
     pageWrapper: {
         backgroundColor: '#f4f6f9',
@@ -162,23 +137,30 @@ const IssueDetail = () => {
         fontFamily: '"Georgia", serif',
         fontSize: '1.8rem'
     },
-    priorityBadge: (prio) => {
+priorityBadge: (prio) => {
+        // Definiamo i colori per ogni livello (Sfondo, Testo, Bordo)
         const colors = {
-            CRITICAL: { bg: '#dc3545', text: 'white' },
-            HIGH: { bg: '#ffc107', text: '#212529' }, 
-            MEDIUM: { bg: '#17a2b8', text: 'white' },
-            LOW: { bg: '#6c757d', text: 'white' }
+            CRITICAL: { bg: '#e9d8fd', text: '#44337a', border: '#b794f4' }, // Viola
+            HIGH:     { bg: '#fff5f5', text: '#c53030', border: '#fc8181' }, // Rosso
+            MEDIUM:   { bg: '#ebf8ff', text: '#2b6cb0', border: '#63b3ed' }, // Blu
+            LOW:      { bg: '#f0fff4', text: '#2f855a', border: '#68d391' }, // Verde
+            DEFAULT:  { bg: '#edf2f7', text: '#4a5568', border: '#cbd5e0' }  // Grigio
         };
-        const style = colors[prio] || colors.LOW;
+
+        // Selezioniamo lo stile giusto, o usiamo il default se 'prio' non esiste
+        const style = colors[prio] || colors.DEFAULT;
+
         return {
             backgroundColor: style.bg,
             color: style.text,
+            border: `1px solid ${style.border}`, // Aggiungiamo il bordo coordinato
             padding: '0.4rem 0.8rem',
             borderRadius: '4px',
             fontSize: '0.8rem',
             fontWeight: 'bold',
             letterSpacing: '0.5px',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            display: 'inline-block' // Assicura che il padding funzioni bene
         };
     },
 
@@ -244,7 +226,6 @@ const IssueDetail = () => {
     timestamp: { color: '#999' },
     commentText: { margin: 0, color: '#444', lineHeight: '1.5' },
 
-<<<<<<< HEAD
     deleteBtn: {
         backgroundColor: 'transparent',
         border: 'none',
@@ -260,8 +241,6 @@ const IssueDetail = () => {
         transition: 'background-color 0.2s'
     },
 
-=======
->>>>>>> main
     formCard: {
         backgroundColor: '#fff',
         padding: '1.5rem',
@@ -412,7 +391,6 @@ const IssueDetail = () => {
                         issue.comments.map((c) => (
                             <div key={c.id} style={styles.commentItem}>
                                 <div style={styles.commentHeader}>
-<<<<<<< HEAD
                                     <div style={styles.authorInfo}>
                                         <span style={styles.authorName}>
                                             {c.autore ? c.autore.nomeCompleto : "Utente"}
@@ -434,14 +412,6 @@ const IssueDetail = () => {
                                             🗑️ Elimina
                                         </button>
                                     )}
-=======
-                                    <span style={styles.authorName}>
-                                        {c.autore ? c.autore.nomeCompleto : "Utente"}
-                                    </span>
-                                    <span style={styles.timestamp}>
-                                        {new Date(c.dataOra).toLocaleString()}
-                                    </span>
->>>>>>> main
                                 </div>
                                 <p style={styles.commentText}>{c.testo}</p>
                             </div>

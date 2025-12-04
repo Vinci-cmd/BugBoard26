@@ -6,53 +6,35 @@ const IssueCard = ({ issue, onDelete }) => {
     const currentUser = AuthService.getCurrentUser();
     const isAdmin = currentUser?.ruolo === 'ADMIN';
 
+// Definiamo il "Tema" della card in base al Tipo
     const getThemeColor = (type) => {
         switch (type) {
-            case 'BUG': return { border: '#e53e3e', bg: '#fff5f5', text: '#c53030' };
-            case 'FEATURE': return { border: '#38a169', bg: '#f0fff4', text: '#2f855a' };
-            case 'QUESTION': return { border: '#3182ce', bg: '#ebf8ff', text: '#2b6cb0' };
-            default: return { border: '#718096', bg: '#edf2f7', text: '#4a5568' };
+            case 'BUG':
+                // Rosso (Stile HIGH)
+                return { border: '#fc8181', bg: '#fff5f5', text: '#c53030' }; 
+            case 'FEATURE':
+                // Verde (Stile LOW)
+                return { border: '#68d391', bg: '#f0fff4', text: '#2f855a' }; 
+            case 'QUESTION':
+                // Blu (Stile MEDIUM)
+                return { border: '#63b3ed', bg: '#ebf8ff', text: '#2b6cb0' }; 
+            case 'DOCUMENTATION':
+                // Arancione (Nuovo stile)
+                return { border: '#f6ad55', bg: '#fffaf0', text: '#c05621' }; 
+            default:
+                // Grigio (Default)
+                return { border: '#cbd5e0', bg: '#edf2f7', text: '#4a5568' }; 
         }
     };
 
     const theme = getThemeColor(issue.tipo);
 
-<<<<<<< HEAD
     const getStatusStyle = (status) => {
         switch (status) {
             case 'TODO': return { bg: '#feebc8', text: '#744210' };
             case 'IN_PROGRESS': return { bg: '#bee3f8', text: '#2c5282' };
             case 'DONE': return { bg: '#c6f6d5', text: '#276749' };
             default: return { bg: '#e2e8f0', text: '#4a5568' };
-=======
-    // 1. Definiamo il "Tema" della card in base al Tipo (Bug=Rosso, Feature=Verde, ecc.)
-    const getThemeColor = (type) => {
-        switch (type) {
-            case 'BUG':
-                return { border: '#e53e3e', bg: '#fff5f5', text: '#c53030' }; // Rosso
-            case 'FEATURE':
-                return { border: '#38a169', bg: '#f0fff4', text: '#2f855a' }; // Verde
-            case 'QUESTION':
-                return { border: '#3182ce', bg: '#ebf8ff', text: '#2b6cb0' }; // Blu
-            default:
-                return { border: '#718096', bg: '#edf2f7', text: '#4a5568' }; // Grigio
-        }
-    };
-
-    const theme = getThemeColor(issue.tipo);
-
-    // 2. Stile specifico per lo Stato (TODO, IN_PROGRESS, DONE) - Stile "Post-it"
-    const getStatusStyle = (status) => {
-        switch (status) {
-            case 'TODO':
-                return { bg: '#feebc8', text: '#744210' }; // Arancio/Beige chiaro
-            case 'IN_PROGRESS':
-                return { bg: '#bee3f8', text: '#2c5282' }; // Azzurro
-            case 'DONE':
-                return { bg: '#c6f6d5', text: '#276749' }; // Verde menta
-            default:
-                return { bg: '#e2e8f0', text: '#4a5568' };
->>>>>>> main
         }
     };
 
@@ -73,7 +55,6 @@ const IssueCard = ({ issue, onDelete }) => {
             backgroundColor: '#ffffff',
             borderRadius: '8px',
             border: '1px solid #e2e8f0',
-<<<<<<< HEAD
             borderLeft: `5px solid ${theme.border}`,
             marginBottom: '1.2rem',
             textDecoration: 'none',
@@ -83,20 +64,6 @@ const IssueCard = ({ issue, onDelete }) => {
             overflow: 'hidden',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
             position: 'relative' // Necessario per posizionare elementi assoluti se volessimo
-=======
-            borderLeft: `5px solid ${theme.border}`, // Il bordo colorato a sinistra
-            marginBottom: '1.2rem',
-            textDecoration: 'none',
-            color: 'inherit',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.02)', // Ombra molto leggera
-            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-            overflow: 'hidden', // Per contenere il footer background
-            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-        },
-        // Container per il padding interno (separato dal footer)
-        contentPadding: {
-            padding: '1.2rem 1.5rem',
->>>>>>> main
         },
         contentPadding: { padding: '1.2rem 1.5rem' },
         header: {
@@ -104,15 +71,12 @@ const IssueCard = ({ issue, onDelete }) => {
             justifyContent: 'space-between',
             alignItems: 'flex-start',
             marginBottom: '0.8rem',
-<<<<<<< HEAD
         },
         titleRow: {
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
             flex: 1
-=======
->>>>>>> main
         },
         title: {
             margin: 0,
@@ -151,21 +115,39 @@ const IssueCard = ({ issue, onDelete }) => {
             fontSize: '0.85rem',
             color: '#718096'
         },
-<<<<<<< HEAD
         metaGroup: { display: 'flex', alignItems: 'center', gap: '6px' },
         metaLabel: { fontWeight: '500' },
         colorBadge: {
             backgroundColor: theme.bg,
             color: theme.text,
+            border: `1px solid ${theme.border}`, // <--- AGGIUNTO IL BORDICINO QUI
             padding: '2px 8px',
             borderRadius: '4px',
             fontWeight: '700',
             fontSize: '0.75rem',
             textTransform: 'uppercase'
         },
-        priorityBadge: {
-            backgroundColor: issue.priorita === 'HIGH' ? '#fff5f5' : (issue.priorita === 'LOW' ? '#f0fff4' : '#ebf8ff'),
-            color: issue.priorita === 'HIGH' ? '#c53030' : (issue.priorita === 'LOW' ? '#2f855a' : '#2b6cb0'),
+priorityBadge: {
+            // Sfondo: Viola (Critical) -> Rosso (High) -> Blu (Medium) -> Verde (Low) -> Grigio (Default)
+            backgroundColor: issue.priorita === 'CRITICAL' ? '#e9d8fd' : 
+                             issue.priorita === 'HIGH' ? '#fff5f5' : 
+                             issue.priorita === 'MEDIUM' ? '#ebf8ff' : 
+                             issue.priorita === 'LOW' ? '#f0fff4' : '#edf2f7',
+            
+            // Testo: Viola scuro -> Rosso scuro -> Blu scuro -> Verde scuro -> Grigio scuro
+            color: issue.priorita === 'CRITICAL' ? '#44337a' : 
+                   issue.priorita === 'HIGH' ? '#c53030' : 
+                   issue.priorita === 'MEDIUM' ? '#2b6cb0' : 
+                   issue.priorita === 'LOW' ? '#2f855a' : '#4a5568',
+            
+            // Bordo coordinato
+            border: `1px solid ${
+                issue.priorita === 'CRITICAL' ? '#b794f4' : 
+                issue.priorita === 'HIGH' ? '#fc8181' : 
+                issue.priorita === 'MEDIUM' ? '#63b3ed' : 
+                issue.priorita === 'LOW' ? '#68d391' : '#cbd5e0'
+            }`,
+
             padding: '2px 8px',
             borderRadius: '4px',
             fontWeight: '700',
@@ -185,35 +167,6 @@ const IssueCard = ({ issue, onDelete }) => {
             display: 'flex',
             alignItems: 'center',
             transition: 'background 0.2s'
-=======
-        metaGroup: {
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-        },
-        metaLabel: {
-            fontWeight: '500'
-        },
-        // Le "pillole" colorate nel footer (es. BUG, HIGH)
-        colorBadge: {
-            backgroundColor: theme.bg,
-            color: theme.text,
-            padding: '2px 8px',
-            borderRadius: '4px',
-            fontWeight: '700',
-            fontSize: '0.75rem',
-            textTransform: 'uppercase'
-        },
-        // Badge specifico per la priorità (può ereditare il tema o averne uno suo)
-        priorityBadge: {
-            backgroundColor: issue.priorita === 'HIGH' ? '#fff5f5' : (issue.priorita === 'LOW' ? '#f0fff4' : '#ebf8ff'),
-            color: issue.priorita === 'HIGH' ? '#c53030' : (issue.priorita === 'LOW' ? '#2f855a' : '#2b6cb0'),
-            padding: '2px 8px',
-            borderRadius: '4px',
-            fontWeight: '700',
-            fontSize: '0.75rem',
-            textTransform: 'uppercase'
->>>>>>> main
         }
     };
 
@@ -231,7 +184,6 @@ const IssueCard = ({ issue, onDelete }) => {
             }}
         >
             <div style={styles.contentPadding}>
-<<<<<<< HEAD
                 <div style={styles.header}>
                     <div style={styles.titleRow}>
                         {/* Icona e Titolo */}
@@ -263,18 +215,6 @@ const IssueCard = ({ issue, onDelete }) => {
                     </div>
                 </div>
 
-=======
-                {/* HEADER: Titolo e Stato */}
-                <div style={styles.header}>
-                    <div style={styles.title}>
-                        <span>{getTypeIcon(issue.tipo)}</span>
-                        {issue.titolo}
-                    </div>
-                    <span style={styles.statusBadge}>{issue.stato}</span>
-                </div>
-
-                {/* CORPO: Descrizione */}
->>>>>>> main
                 <p style={styles.description}>
                     {issue.descrizione 
                         ? (issue.descrizione.length > 100 ? issue.descrizione.substring(0, 100) + '...' : issue.descrizione) 
@@ -282,29 +222,15 @@ const IssueCard = ({ issue, onDelete }) => {
                 </p>
             </div>
 
-<<<<<<< HEAD
-=======
-            {/* FOOTER: Dettagli tecnici con badge */}
->>>>>>> main
             <div style={styles.footer}>
                 <div style={styles.metaGroup}>
                     <span style={styles.metaLabel}>Tipo:</span>
                     <span style={styles.colorBadge}>{issue.tipo}</span>
                 </div>
-<<<<<<< HEAD
                 <div style={styles.metaGroup}>
                     <span style={styles.metaLabel}>Priorità:</span>
                     <span style={styles.priorityBadge}>{issue.priorita}</span>
                 </div>
-=======
-
-                <div style={styles.metaGroup}>
-                    <span style={styles.metaLabel}>Priorità:</span>
-                    {/* Uso uno stile specifico per priorità, oppure riuso theme */}
-                    <span style={styles.priorityBadge}>{issue.priorita}</span>
-                </div>
-
->>>>>>> main
                 <div style={styles.metaGroup}>
                     <span style={styles.metaLabel}>Autore:</span> 
                     <span>{issue.autore?.nomeCompleto || 'N/D'}</span>

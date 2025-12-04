@@ -9,9 +9,6 @@ public class CommentDTO {
     private String testo;
     private Integer autoreId; // Nuovo campo fondamentale!
 
-    @NotNull(message = "L'autore è obbligatorio")
-    private Integer autoreId;
-
     // Costruttore vuoto (obbligatorio per Jackson)
     public CommentDTO() {}
 
