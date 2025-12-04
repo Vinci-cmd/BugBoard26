@@ -37,11 +37,6 @@ public class Issue {
     @Enumerated(EnumType.STRING)
     private IssuePriority priorita;
 
-    // --- GESTIONE ALLEGATO (BLOB) ---
-    
-    @Column(name = "allegato", columnDefinition = "BYTEA") 
-    private byte[] allegato; 
-
     @Column(name = "nome_file_allegato")
     private String nomeFileAllegato;
 
@@ -132,14 +127,6 @@ public class Issue {
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
-    }
-    
-    public byte[] getAllegato() {
-        return allegato;
-    }
-
-    public void setAllegato(byte[] allegato) {
-        this.allegato = allegato;
     }
 
     public String getNomeFileAllegato() {

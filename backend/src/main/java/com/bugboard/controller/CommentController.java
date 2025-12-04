@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class CommentController {
 
     // Endpoint: POST /api/issues/{id}/comments
     @PostMapping("/{issueId}/comments")
-    public ResponseEntity<?> postComment(@PathVariable Long issueId, @RequestBody CommentDTO req) {
+    public ResponseEntity<?> postComment(@PathVariable Long issueId, @Valid @RequestBody CommentDTO req) {
         try {
             // MODIFICA: Passiamo issueId, testo E autoreId al service
             Comment nuovoCommento = commentService.addComment(issueId, req.getTesto(), req.getAutoreId());

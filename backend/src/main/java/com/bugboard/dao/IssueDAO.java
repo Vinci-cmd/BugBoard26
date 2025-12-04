@@ -13,16 +13,13 @@ import java.util.List;
 @Repository
 public interface IssueDAO extends JpaRepository<Issue, Long> {
 
-    // Questa query è "intelligente": se un parametro è NULL, ignora quel filtro.
-    // Funziona per tutte le combinazioni (es. solo Tipo, Tipo+Stato, Tutto vuoto = findAll).
+    // MODIFICA: Aggiunto "ORDER BY i.dataCreazione DESC" alla fine della query
     @Query("SELECT i FROM Issue i WHERE " +
            "(:tipo IS NULL OR i.tipo = :tipo) AND " +
            "(:stato IS NULL OR i.stato = :stato) AND " +
-           "(:priorita IS NULL OR i.priorita = :priorita)")
+           "(:priorita IS NULL OR i.priorita = :priorita) " +
+           "ORDER BY i.dataCreazione DESC") // <--- ECCO LA MAGIA
     List<Issue> searchIssues(@Param("tipo") IssueType tipo, 
                              @Param("stato") IssueStatus stato, 
                              @Param("priorita") IssuePriority priorita);
-                             
-    // Nota: Ho rimosso i vecchi metodi findByTipo, findByStato, findByFilters
-    // perché ora searchIssues li sostituisce tutti.
 }
